@@ -30,6 +30,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,26 +62,28 @@ fun resikelApp(
     val currentDestination = currentBackStackEntry?.destination?.route
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = when (currentDestination) {
-                            "homeScreen" -> "Home"
-                            "historyScreen" -> "History"
-                            "profileScreen" -> "Profile"
-                            else -> "ResikelApp"
-                        },
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-            )
+            if (currentDestination != "homeScreen") {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(27, 94, 60)),
+                    title = {
+                        Text(
+                            text = when (currentDestination) {
+                                "historyScreen" -> "History"
+                                "profileScreen" -> "Profile"
+                                else -> "ResikelApp"
+                            },
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                )
+            }
         },
 
         bottomBar = { navBottomResikel(navController) },
-        content = { innerPadding ->
+        content = { paddingValues ->
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding()
             ) {
                 NavHost(
                     navController = navController,
@@ -124,26 +127,46 @@ fun navBottomResikel(
                 navController.navigate("homeScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
-            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
+            }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_home),
+                    contentDescription = "",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
             IconButton(onClick = {
                 selectedItem = "historyScreen"
                 navController.navigate("historyScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
-            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
+            }) {
+                Image(
+                    painter = painterResource(R.drawable.ic_analy),
+                    contentDescription = "",
+                    modifier = Modifier.size(25.dp)
+                ) }
             Spacer(Modifier.width(56.dp)) // Space for the FAB in the middle
             IconButton(onClick = {
                 selectedItem = "profileScreen"
                 navController.navigate("profileScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
-            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
+            }) {  Image(
+                painter = painterResource(R.drawable.ic_hist),
+                contentDescription = "",
+                modifier = Modifier.size(25.dp)
+            ) }
             IconButton(onClick = {
                 selectedItem = "profileScreen"
                 navController.navigate("profileScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
-            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
+            }) { Image(
+                painter = painterResource(R.drawable.ic_prof),
+                contentDescription = "",
+                modifier = Modifier.size(25.dp)
+            ) }
         }
 
 

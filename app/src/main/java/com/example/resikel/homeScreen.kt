@@ -1,5 +1,6 @@
 package com.example.resikel
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,12 +11,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +35,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.resikel.ui.theme.montserrat
 
 @Composable
@@ -57,39 +65,148 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
         Modifier
             .verticalScroll(scrollState)
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(252, 255, 252))
     ) {
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            tonalElevation = 40.dp,
-            modifier = Modifier
-                .height(250.dp)
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Row() {
+        Box {
+            Row(
+
+                horizontalArrangement = Arrangement.spacedBy(176.dp),
+                modifier = Modifier
+                    .background(Color(27, 94, 60))
+                    .fillMaxWidth().padding(top = 10.dp)
+            ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_google),
-                    contentDescription = "nahidul",
+                    painter = painterResource(R.drawable.ic_logohome),
+                    contentDescription = "",
+
                     modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.Green, CircleShape),
-                    contentScale = ContentScale.Crop
+                        .size(175.dp)
+                        .offset(y = -30.dp)
+
                 )
+                Image(
+                    painter = painterResource(R.drawable.ic_notif),
+                    contentDescription = "", modifier = Modifier
+                        .size(25.dp)
+                        .offset(y = 35.dp)
+                )
+            }
+
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = Color(251, 255, 249),
+                shadowElevation = 10.dp,
+                tonalElevation = 40.dp,
+                modifier = Modifier
+                    .padding(top = 95.dp)
+                    .height(250.dp)
+                    .fillMaxWidth()
+            ) {
                 Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(6.dp)
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text("Naya Rafeza", fontWeight = FontWeight.Bold)
-                    Text("ya hallo semua~")
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier
+                            .padding(
+                                top = 20.dp,
+                                start = 0.dp,
+                                end = 0.dp,
+                                bottom = 15.dp
+                            )
+                            .fillMaxWidth()
+                    ) {
+                        Row {
+                            Image(
+                                painter = painterResource(R.drawable.pp),
+                                contentDescription = "nahidul",
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, Color(64, 64, 64), CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.padding(6.dp)
+                            ) {
+                                Text(
+                                    "Naya Rafeza",
+                                    fontFamily = montserrat,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    "20.000 Poin",
+                                    fontFamily = montserrat,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        Button(
+                            colors = ButtonDefaults.buttonColors(Color.Transparent),
+                            border = BorderStroke(1.dp, Color(64, 64, 64)),
+                            onClick = {}
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_refresh),
+                                contentDescription = "",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(7.dp))
+                            Text(
+                                "Tukar Poin",
+                                color = Color(64, 64, 64),
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 12.sp,
+                                fontFamily = montserrat
+                            )
+                        }
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = Color(251, 255, 249),
+                        tonalElevation = 40.dp,
+                        border = BorderStroke(1.dp, color = Color.Black),
+                        modifier = Modifier
+                            .height(135.dp)
+                            .padding(start = 30.dp, end = 30.dp, bottom = 10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(135.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.bg_card),
+                                    contentDescription = "", contentScale = ContentScale.FillBounds
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("20,90 TON", fontSize = 35.sp, fontWeight = FontWeight.Bold)
+                                Text("Waste successfully recycled!", fontSize = 12.sp)
+                            }
+
+
+                        }
+                    }
                 }
+
 
             }
         }
+
+
         Text(
             text = "What do you want to do today?",
-            modifier = Modifier.padding(15.dp),
+            modifier = Modifier.padding(start = 15.dp, top = 20.dp, bottom = 15.dp, end = 15.dp),
             fontFamily = montserrat,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
@@ -100,14 +217,14 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     onClick = {},
                     modifier = Modifier.size(65.dp),
                     shape = RoundedCornerShape(33.dp),
-                    color = Color.Red,
+                    color = Color(243, 243, 243),
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Face,
+                    Image(
+                        painter = painterResource(R.drawable.ic_com),
                         contentDescription = "",
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(15.dp)
+                    )
 
-                        )
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(
@@ -122,14 +239,13 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     onClick = {},
                     modifier = Modifier.size(65.dp),
                     shape = RoundedCornerShape(33.dp),
-                    color = Color.Red,
+                    color = Color(243, 243, 243),
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.LocationOn,
+                    Image(
+                        painter = painterResource(R.drawable.ic_location),
                         contentDescription = "",
-                        modifier = Modifier.padding(10.dp),
-
-                        )
+                        modifier = Modifier.padding(10.dp)
+                    )
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(
@@ -144,14 +260,13 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     onClick = {},
                     modifier = Modifier.size(65.dp),
                     shape = RoundedCornerShape(33.dp),
-                    color = Color.Red,
+                    color = Color(243, 243, 243),
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Call,
+                    Image(
+                        painter = painterResource(R.drawable.ic_kamera),
                         contentDescription = "",
-                        modifier = Modifier.padding(10.dp),
-
-                        )
+                        modifier = Modifier.padding(10.dp)
+                    )
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(
@@ -166,12 +281,12 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     onClick = {},
                     modifier = Modifier.size(65.dp),
                     shape = RoundedCornerShape(33.dp),
-                    color = Color.Red,
+                    color = Color(243, 243, 243),
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Info,
+                    Image(
+                        painter = painterResource(R.drawable.ic_pickup),
                         contentDescription = "",
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(10.dp)
                     )
                 }
                 Spacer(Modifier.height(6.dp))
@@ -183,7 +298,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                 )
             }
         }
-        Spacer(Modifier.height(25.dp))
+        Spacer(Modifier.height(15.dp))
         Text(
             text = "Transfer", modifier = Modifier.padding(15.dp),
             fontFamily = montserrat,
@@ -217,8 +332,11 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                 }
             }
         }
-        Spacer(Modifier.height(15.dp))
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(10.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(
                 text = "Today's Information", modifier = Modifier.padding(15.dp),
                 fontFamily = montserrat,
@@ -238,7 +356,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             shape = RoundedCornerShape(6.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp)
+                .padding(start = 20.dp, bottom = 10.dp, end = 20.dp, top = 0.dp)
                 .height(200.dp)
         ) {
             Column {
@@ -283,5 +401,11 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
         }
 
     }
+}
+
+@Preview
+@Composable
+private fun prehomescreen() {
+    homeScreen(navController = rememberNavController())
 }
 
