@@ -55,7 +55,7 @@ fun signUp(modifier: Modifier = Modifier) {
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(35.dp))
+        Spacer(Modifier.height(30.dp))
         Image(
             painter = painterResource(R.drawable.logosignup),
             contentDescription = "logo",
@@ -138,7 +138,7 @@ fun signUp(modifier: Modifier = Modifier) {
                 onCheckedChange = { checked = it }
             )
         }
-        Spacer(Modifier.height(35.dp))
+        Spacer(Modifier.height(20.dp))
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(27, 94, 60)
@@ -146,7 +146,7 @@ fun signUp(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
+                .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 8.dp),
             onClick = {}) {
             Text(
                 text = "Sign Up",
@@ -164,7 +164,7 @@ fun signUp(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
+                .padding(top = 6.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
             onClick = {}) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

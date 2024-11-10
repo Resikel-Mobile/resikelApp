@@ -102,7 +102,7 @@ fun signIn(navController: NavController,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
+                .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 10.dp),
             onClick = {navController.navigate("resikel_app")}) {
             Text(
                 text = "Sign In",

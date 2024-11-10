@@ -1,32 +1,27 @@
-package com.example.resikel
+package com.example.resikelapp
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,49 +31,79 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.resikel.R
+import com.example.resikel.homeScreen
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun resikelApp(modifier: Modifier = Modifier) {
-   Scaffold(Modifier.safeContentPadding(),
-       topBar = { Text("RESIKEL") },
-       bottomBar = { CustomBottomBarWithFAB() },
-       content = {paddingValues ->   Row(modifier = Modifier.padding(paddingValues)) {
-           Image(
-               painter = painterResource(R.drawable.ic_google),
-               contentDescription = "nahidul",
-               modifier = Modifier
-                   .size(50.dp)
-                   .clip(CircleShape)
-                   .border(2.dp, Color.Green, CircleShape),
-               contentScale = ContentScale.Crop
-           )
-           Column(
-               verticalArrangement = Arrangement.Center,
-               modifier = Modifier.padding(6.dp)
-           ) {
-               Text("Naya Rafeza", fontWeight = FontWeight.Bold)
-               Text("ya hallo semua~")
-           }
+fun resikelApp(
+    navController: NavHostController = rememberNavController()
+) {
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination?.route
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = when (currentDestination) {
+                            "homeScreen" -> "Home"
+                            "historyScreen" -> "History"
+                            "profileScreen" -> "Profile"
+                            else -> "ResikelApp"
+                        },
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+            )
+        },
 
-       } }
-   )
+        bottomBar = { navBottomResikel(navController) },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                NavHost(
+                    navController = navController,
+                    startDestination = "homeScreen"
+                ) {
+                    composable("homeScreen") { homeScreen(navController = navController) }
+                    composable("historyScreen") { }
+                    composable("profileScreen") { }
+                }
+            }
+        }
+    )
 }
 
 @Composable
-fun CustomBottomBarWithFAB(modifier: Modifier = Modifier) {
-    Box{
+fun navBottomResikel(
+    navController: NavHostController,
+) {
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination?.route
+    var selectedItem by remember { mutableStateOf("homeScreen") }
+
+    Box {
         Image(
             painter = painterResource(R.drawable.bgnav),
             contentDescription = "",
@@ -91,20 +116,40 @@ fun CustomBottomBarWithFAB(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 25.dp),
+                .padding(bottom = 15.dp),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60))
-            Icon(Icons.Default.FavoriteBorder, contentDescription = "Favorites", tint = Color(27, 94, 60))
+            IconButton(onClick = {
+                selectedItem = "homeScreen"
+                navController.navigate("homeScreen") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
+            IconButton(onClick = {
+                selectedItem = "historyScreen"
+                navController.navigate("historyScreen") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
             Spacer(Modifier.width(56.dp)) // Space for the FAB in the middle
-            Icon(Icons.Default.Share, contentDescription = "Security", tint = Color(27, 94, 60))
-            Icon(Icons.Default.Person, contentDescription = "Profile", tint = Color(27, 94, 60))
+            IconButton(onClick = {
+                selectedItem = "profileScreen"
+                navController.navigate("profileScreen") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
+            IconButton(onClick = {
+                selectedItem = "profileScreen"
+                navController.navigate("profileScreen") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color(27, 94, 60)) }
         }
 
 
         // Floating Action Button in the Center
         FloatingActionButton(
-            containerColor = Color(27,94,60),
+            containerColor = Color(27, 94, 60),
             contentColor = Color.White,
             shape = RoundedCornerShape(35.dp),
             onClick = { /* action */ },
@@ -116,13 +161,11 @@ fun CustomBottomBarWithFAB(modifier: Modifier = Modifier) {
             Icon(Icons.Default.Face, contentDescription = "Camera")
         }
     }
+
 }
 
-
-
-
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun resikelp() {
+private fun preee() {
     resikelApp()
 }

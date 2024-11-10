@@ -8,15 +8,19 @@ import androidx.navigation.compose.rememberNavController
 import com.example.resikel.auth.signIn
 import com.example.resikel.auth.signUp
 import com.example.resikel.auth.welcomeResikel
-import com.example.resikel.resikelApp
+import com.example.resikel.homeScreen
+
+import com.example.resikelapp.resikelApp
+
 
 @Composable
 fun resikelNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "welcome_resikel") {
         composable("welcome_resikel"){ welcomeResikel(navController) }
-        composable(route = "sign_in") { signIn(navController) }
+        composable("sign_in") { signIn(navController) }
         composable("sign_up"){ signUp() }
         composable("resikel_app"){ resikelApp() }
+        composable("home_screen"){ homeScreen(navController = navController) }
     }
 }

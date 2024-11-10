@@ -17,14 +17,17 @@ import com.example.resikel.auth.welcomeResikel
 import com.example.resikel.navigation.resikelNavigation
 import com.example.resikel.ui.theme.ResikelTheme
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ResikelTheme {
-                Surface( modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     resikelNavigation()
                 }
             }

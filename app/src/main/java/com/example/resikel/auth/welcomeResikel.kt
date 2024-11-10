@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.ui.theme.montserrat
 
@@ -64,7 +65,7 @@ fun welcomeResikel(navController: NavController) {
         Spacer(modifier = Modifier.height(15.dp))
         Text(
             "Peduli sampah, jangan nyampah,\n dan mulutmu jangan bau sampah,\n paham",
-            fontSize = 16.sp,
+            fontSize = 13.sp,
             textAlign = TextAlign.Center,
             color = Color(27, 94, 60),
             fontFamily = montserrat,
@@ -72,7 +73,7 @@ fun welcomeResikel(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(27, 94, 60)
@@ -137,5 +138,11 @@ fun welcomeResikel(navController: NavController) {
         }
 
     }
+}
+
+@Preview
+@Composable
+private fun precwelcom() {
+    welcomeResikel(navController = rememberNavController())
 }
 
