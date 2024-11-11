@@ -257,7 +257,9 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Surface(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("reportScreen")
+                    },
                     modifier = Modifier.size(65.dp),
                     shape = RoundedCornerShape(33.dp),
                     color = Color(243, 243, 243),

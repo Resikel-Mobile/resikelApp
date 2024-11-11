@@ -40,11 +40,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.resikel.R
 import com.example.resikel.ui.theme.montserrat
 
 @Composable
-fun signUp(modifier: Modifier = Modifier) {
+fun signUp(modifier: Modifier = Modifier,
+           navController: NavController) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -147,7 +149,7 @@ fun signUp(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .height(80.dp)
                 .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 8.dp),
-            onClick = {}) {
+            onClick = {navController.navigate("sign_in")}) {
             Text(
                 text = "Sign Up",
                 fontWeight = FontWeight.Normal,
@@ -193,10 +195,4 @@ fun signUp(modifier: Modifier = Modifier) {
 
         }
     }
-}
-
-@Preview
-@Composable
-private fun prev() {
-    signUp()
 }
