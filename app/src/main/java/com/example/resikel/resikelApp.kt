@@ -52,26 +52,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.homeScreen
-import com.example.resikel.navigation.onproggress
-import com.example.resikel.report.ReportScreen
-import com.example.resikel.report.SuccessReport
-import com.example.resikel.report.SummaryReport
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun resikelApp(
     navController: NavHostController = rememberNavController()
 ) {
-
-
-    val noTopBarScreens = listOf("homeScreen", "reportScreen", "summaryScreen", "successScreen")
-    val noBottomBarScreens = listOf( "reportScreen", "summaryScreen", "successScreen")
-
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination?.route
     Scaffold(
         topBar = {
-            if (currentDestination !in noTopBarScreens ) {
+            if (currentDestination != "homeScreen") {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(27, 94, 60)),
                     title = {
@@ -89,9 +80,7 @@ fun resikelApp(
             }
         },
 
-        bottomBar = {  if (currentDestination !in noBottomBarScreens) {
-            navBottomResikel(navController = navController)
-        } },
+        bottomBar = { navBottomResikel(navController) },
         content = { paddingValues ->
             Column(
                 modifier = Modifier.padding()
@@ -101,11 +90,8 @@ fun resikelApp(
                     startDestination = "homeScreen"
                 ) {
                     composable("homeScreen") { homeScreen(navController = navController) }
-                    composable("historyScreen") { onproggress() }
-                    composable("profileScreen") { onproggress() }
-                    composable("reportScreen"){ ReportScreen(navController = navController) }
-                    composable("summaryScreen"){ SummaryReport(navController = navController) }
-                    composable("successScreen"){ SuccessReport(navController = navController) }
+                    composable("historyScreen") { }
+                    composable("profileScreen") { }
                 }
             }
         }
