@@ -308,9 +308,9 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             fontWeight = FontWeight.Bold
         )
         LazyRow(
-            modifier = Modifier.fillMaxWidth(), // Mengisi lebar layar
-            horizontalArrangement = Arrangement.spacedBy(10.dp), // Memberikan jarak antar item
-            contentPadding = PaddingValues(horizontal = 16.dp) // Padding di awal dan akhir
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(items) { item ->
                 // Setiap item di dalam LazyRow
