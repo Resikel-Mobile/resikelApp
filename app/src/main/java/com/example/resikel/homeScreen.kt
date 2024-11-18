@@ -59,7 +59,12 @@ import com.example.resikel.ui.theme.montserrat
 @Composable
 fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
     val scrollState = rememberScrollState()
-    val items = listOf("Gopay", "shopeepay", "Ovo", "dana", "Item 5")
+    val items = listOf(
+        Pair("Gopay", R.drawable.ic_gopay),
+        Pair("Shopeepay", R.drawable.ic_shopeepay),
+        Pair("Ovo", R.drawable.ic_ovo)
+    )
+
 
     Column(
         Modifier
@@ -265,7 +270,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     color = Color(243, 243, 243),
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.ic_kamera),
+                        painter = painterResource(R.drawable.ic_report),
                         contentDescription = "",
                         modifier = Modifier.padding(10.dp)
                     )
@@ -302,7 +307,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
         }
         Spacer(Modifier.height(15.dp))
         Text(
-            text = "Transfer", modifier = Modifier.padding(15.dp),
+            text = "Transfer", modifier = Modifier.padding(start = 15.dp, bottom = 10.dp, top = 10.dp),
             fontFamily = montserrat,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
@@ -312,28 +317,33 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            items(items) { item ->
+            items(items) { (name, iconRes) ->
                 // Setiap item di dalam LazyRow
                 Surface(
-                    shadowElevation = 12.dp,
+                    shadowElevation = 4.dp,
                     shape = RoundedCornerShape(5.dp),
-                    color = Color.Gray,
+                    color = Color.White,
                     modifier = Modifier
-                        .size(110.dp)
+                        .size(118.dp)
                         .padding(5.dp)
                 ) {
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "")
+                        // Ganti Icon dengan Image untuk menggunakan ikon dari drawable
+                        Image(
+                            painter = painterResource(id = iconRes),
+                            contentDescription = name,
+                            modifier = Modifier.size(40.dp) // Atur ukuran ikon
+                        )
                         Spacer(Modifier.height(10.dp))
-                        Text(text = item, color = Color.White)
+                        Text(text = name, color = Color.Black, fontFamily = montserrat, fontSize = 10.sp)
                     }
-
                 }
             }
         }
+
         Spacer(Modifier.height(10.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
