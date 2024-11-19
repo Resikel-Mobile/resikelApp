@@ -51,6 +51,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
+import com.example.resikel.analisis.analisisScreen
 import com.example.resikel.homeScreen
 import com.example.resikel.navigation.onproggress
 import com.example.resikel.profile.editProfile
@@ -88,6 +89,7 @@ fun resikelApp(
                             text = when (currentDestination) {
                                 "historyScreen" -> "History"
                                 "profileScreen" -> "Profile"
+                                "analisisScreen" -> "Grafik"
                                 else -> "ResikelApp"
                             },
                             fontSize = 24.sp,
@@ -113,7 +115,7 @@ fun resikelApp(
                 ) {
                     composable("homeScreen") { homeScreen(navController = navController) }
                     composable("historyScreen") { onproggress() }
-                    composable("profileScreen") { onproggress() }
+                    composable("analisisScreen") { onproggress() }
                     composable("reportScreen") { ReportScreen(navController = navController) }
                     composable("summaryScreen") { SummaryReport(navController = navController) }
                     composable("successScreen") { SuccessReport(navController = navController) }
@@ -163,26 +165,26 @@ fun navBottomResikel(
                 )
             }
             IconButton(onClick = {
-                selectedItem = "historyScreen"
-                navController.navigate("historyScreen") {
+                selectedItem = "analisisScreen"
+                navController.navigate("AnalisisScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
             }) {
                 Image(
-                    painter = painterResource(if (currentDestination == "historyScreen") R.drawable.ic_analy_aktif else R.drawable.ic_analy),
+                    painter = painterResource(if (currentDestination == "analisisScreen") R.drawable.ic_analy_aktif else R.drawable.ic_analy),
                     contentDescription = "",
                     modifier = Modifier.size(25.dp)
                 )
             }
             Spacer(Modifier.width(56.dp)) // Space for the FAB in the middle
             IconButton(onClick = {
-                selectedItem = "profileScreen"
-                navController.navigate("profileScreen") {
+                selectedItem = "historyScreen"
+                navController.navigate("historyScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
             }) {
                 Image(
-                    painter = painterResource(if (currentDestination == "profileScreen") R.drawable.ic_hist_aktif else R.drawable.ic_hist),
+                    painter = painterResource(if (currentDestination == "historyScreen") R.drawable.ic_hist_aktif else R.drawable.ic_hist),
                     contentDescription = "",
                     modifier = Modifier.size(30.dp)
                 )
