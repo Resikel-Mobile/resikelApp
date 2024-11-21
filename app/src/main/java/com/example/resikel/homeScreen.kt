@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -133,19 +134,18 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                                     .border(2.dp, Color(64, 64, 64), CircleShape),
                                 contentScale = ContentScale.Crop
                             )
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                modifier = Modifier.padding(6.dp)
-                            ) {
+                            Spacer(Modifier.width(12.dp))
+                            Column{
                                 Text(
                                     "Naya Rafeza",
                                     fontFamily = montserrat,
-                                    fontWeight = FontWeight.Bold
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
                                 )
-                                Spacer(Modifier.height(2.dp))
                                 Text(
                                     "20.000 Poin",
                                     fontFamily = montserrat,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -372,8 +372,9 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             )
         }
         Surface(
-            color = Color.Gray,
+            color = colorResource(R.color.white),
             shape = RoundedCornerShape(6.dp),
+             shadowElevation = 4.dp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, bottom = 10.dp, end = 20.dp, top = 0.dp)

@@ -135,7 +135,7 @@ fun resikelApp(
                     startDestination = "homeScreen"
                 ) {
                     composable("homeScreen") { homeScreen(navController = navController) }
-                    composable("notifScreen") { notifScreen() }
+                    composable("notifScreen") { notifScreen(navController = navController) }
                     composable("historyScreen") { historyScreen() }
                     composable("analisisScreen") { onproggress() }
                     composable("reportScreen") { ReportScreen(navController = navController) }
