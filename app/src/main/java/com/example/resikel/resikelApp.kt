@@ -52,13 +52,21 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.analisis.analisisScreen
+import com.example.resikel.historyScreen
 import com.example.resikel.homeScreen
 import com.example.resikel.navigation.onproggress
+import com.example.resikel.notifScreen
+import com.example.resikel.pickup.pickupScreen
+import com.example.resikel.pickup.setLocation
+import com.example.resikel.pickup.successDelivery
+import com.example.resikel.pickup.trackingOrder
+import com.example.resikel.pickup.trashItemList
 import com.example.resikel.profile.editProfile
 import com.example.resikel.profile.profileScreen
 import com.example.resikel.report.ReportScreen
 import com.example.resikel.report.SuccessReport
 import com.example.resikel.report.SummaryReport
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,9 +81,23 @@ fun resikelApp(
         "summaryScreen",
         "successScreen",
         "profileScreen",
-        "editProfile"
+        "editProfile",
+        "historyScreen",
+        "pickupScreen",
+        "trashItemList",
+        "setLocation",
+        "trackingOrder", "successDelivery", "notifScreen"
     )
-    val noBottomBarScreens = listOf("reportScreen", "summaryScreen", "successScreen", "editProfile")
+    val noBottomBarScreens = listOf(
+        "reportScreen",
+        "summaryScreen",
+        "successScreen",
+        "editProfile",
+        "pickupScreen",
+        "trashItemList",
+        "setLocation",
+        "trackingOrder", "successDelivery", "notifScreen"
+    )
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination?.route
@@ -87,7 +109,6 @@ fun resikelApp(
                     title = {
                         Text(
                             text = when (currentDestination) {
-                                "historyScreen" -> "History"
                                 "profileScreen" -> "Profile"
                                 "analisisScreen" -> "Grafik"
                                 else -> "ResikelApp"
@@ -114,9 +135,15 @@ fun resikelApp(
                     startDestination = "homeScreen"
                 ) {
                     composable("homeScreen") { homeScreen(navController = navController) }
-                    composable("historyScreen") { onproggress() }
+                    composable("notifScreen") { notifScreen() }
+                    composable("historyScreen") { historyScreen() }
                     composable("analisisScreen") { onproggress() }
                     composable("reportScreen") { ReportScreen(navController = navController) }
+                    composable("pickupScreen") { pickupScreen(navController = navController) }
+                    composable("trashItemList") { trashItemList(navController = navController) }
+                    composable("setLocation") { setLocation(navController = navController) }
+                    composable("trackingOrder") { trackingOrder(navController = navController) }
+                    composable("successDelivery") { successDelivery(navController = navController) }
                     composable("summaryScreen") { SummaryReport(navController = navController) }
                     composable("successScreen") { SuccessReport(navController = navController) }
                     composable("profileScreen") { profileScreen(navController = navController) }

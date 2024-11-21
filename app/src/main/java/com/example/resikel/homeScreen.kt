@@ -78,7 +78,8 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(176.dp),
                 modifier = Modifier
                     .background(Color(27, 94, 60))
-                    .fillMaxWidth().padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_logohome),
@@ -94,6 +95,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     contentDescription = "", modifier = Modifier
                         .size(25.dp)
                         .offset(y = 35.dp)
+                        .clickable { navController.navigate("notifScreen") }
                 )
             }
 
@@ -285,7 +287,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Surface(
-                    onClick = {},
+                    onClick = { navController.navigate("pickupScreen") },
                     modifier = Modifier.size(65.dp),
                     shape = RoundedCornerShape(33.dp),
                     color = Color(243, 243, 243),
@@ -307,7 +309,8 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
         }
         Spacer(Modifier.height(15.dp))
         Text(
-            text = "Transfer", modifier = Modifier.padding(start = 15.dp, bottom = 10.dp, top = 10.dp),
+            text = "Transfer",
+            modifier = Modifier.padding(start = 15.dp, bottom = 10.dp, top = 10.dp),
             fontFamily = montserrat,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
@@ -338,7 +341,12 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                             modifier = Modifier.size(40.dp) // Atur ukuran ikon
                         )
                         Spacer(Modifier.height(10.dp))
-                        Text(text = name, color = Color.Black, fontFamily = montserrat, fontSize = 10.sp)
+                        Text(
+                            text = name,
+                            color = Color.Black,
+                            fontFamily = montserrat,
+                            fontSize = 10.sp
+                        )
                     }
                 }
             }
