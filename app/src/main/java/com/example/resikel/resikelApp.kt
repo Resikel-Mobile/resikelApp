@@ -51,11 +51,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
+import com.example.resikel.analisis.analisisScreen
+import com.example.resikel.historyScreen
 import com.example.resikel.homeScreen
 import com.example.resikel.navigation.onproggress
+import com.example.resikel.notifScreen
+import com.example.resikel.pickup.pickupScreen
+import com.example.resikel.pickup.setLocation
+import com.example.resikel.pickup.successDelivery
+import com.example.resikel.pickup.trackingOrder
+import com.example.resikel.pickup.trashItemList
+import com.example.resikel.profile.editProfile
+import com.example.resikel.profile.profileScreen
 import com.example.resikel.report.ReportScreen
 import com.example.resikel.report.SuccessReport
 import com.example.resikel.report.SummaryReport
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,21 +75,42 @@ fun resikelApp(
 ) {
 
 
-    val noTopBarScreens = listOf("homeScreen", "reportScreen", "summaryScreen", "successScreen")
-    val noBottomBarScreens = listOf( "reportScreen", "summaryScreen", "successScreen")
+    val noTopBarScreens = listOf(
+        "homeScreen",
+        "reportScreen",
+        "summaryScreen",
+        "successScreen",
+        "profileScreen",
+        "editProfile",
+        "historyScreen",
+        "pickupScreen",
+        "trashItemList",
+        "setLocation",
+        "trackingOrder", "successDelivery", "notifScreen"
+    )
+    val noBottomBarScreens = listOf(
+        "reportScreen",
+        "summaryScreen",
+        "successScreen",
+        "editProfile",
+        "pickupScreen",
+        "trashItemList",
+        "setLocation",
+        "trackingOrder", "successDelivery", "notifScreen"
+    )
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination?.route
     Scaffold(
         topBar = {
-            if (currentDestination !in noTopBarScreens ) {
+            if (currentDestination !in noTopBarScreens) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(27, 94, 60)),
                     title = {
                         Text(
                             text = when (currentDestination) {
-                                "historyScreen" -> "History"
                                 "profileScreen" -> "Profile"
+                                "analisisScreen" -> "Grafik"
                                 else -> "ResikelApp"
                             },
                             fontSize = 24.sp,
@@ -89,9 +121,11 @@ fun resikelApp(
             }
         },
 
-        bottomBar = {  if (currentDestination !in noBottomBarScreens) {
-            navBottomResikel(navController = navController)
-        } },
+        bottomBar = {
+            if (currentDestination !in noBottomBarScreens) {
+                navBottomResikel(navController = navController)
+            }
+        },
         content = { paddingValues ->
             Column(
                 modifier = Modifier.padding()
@@ -101,11 +135,19 @@ fun resikelApp(
                     startDestination = "homeScreen"
                 ) {
                     composable("homeScreen") { homeScreen(navController = navController) }
-                    composable("historyScreen") { onproggress() }
-                    composable("profileScreen") { onproggress() }
-                    composable("reportScreen"){ ReportScreen(navController = navController) }
-                    composable("summaryScreen"){ SummaryReport(navController = navController) }
-                    composable("successScreen"){ SuccessReport(navController = navController) }
+                    composable("notifScreen") { notifScreen() }
+                    composable("historyScreen") { historyScreen() }
+                    composable("analisisScreen") { onproggress() }
+                    composable("reportScreen") { ReportScreen(navController = navController) }
+                    composable("pickupScreen") { pickupScreen(navController = navController) }
+                    composable("trashItemList") { trashItemList(navController = navController) }
+                    composable("setLocation") { setLocation(navController = navController) }
+                    composable("trackingOrder") { trackingOrder(navController = navController) }
+                    composable("successDelivery") { successDelivery(navController = navController) }
+                    composable("summaryScreen") { SummaryReport(navController = navController) }
+                    composable("successScreen") { SuccessReport(navController = navController) }
+                    composable("profileScreen") { profileScreen(navController = navController) }
+                    composable("editProfile") { editProfile(navController = navController) }
                 }
             }
         }
@@ -144,11 +186,24 @@ fun navBottomResikel(
             }
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_home),
+                    painter = painterResource(if (currentDestination == "homeScreen") R.drawable.ic_home_aktif else R.drawable.ic_home),
                     contentDescription = "",
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(25.dp)
                 )
             }
+            IconButton(onClick = {
+                selectedItem = "analisisScreen"
+                navController.navigate("AnalisisScreen") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }) {
+                Image(
+                    painter = painterResource(if (currentDestination == "analisisScreen") R.drawable.ic_analy_aktif else R.drawable.ic_analy),
+                    contentDescription = "",
+                    modifier = Modifier.size(25.dp)
+                )
+            }
+            Spacer(Modifier.width(56.dp)) // Space for the FAB in the middle
             IconButton(onClick = {
                 selectedItem = "historyScreen"
                 navController.navigate("historyScreen") {
@@ -156,31 +211,23 @@ fun navBottomResikel(
                 }
             }) {
                 Image(
-                    painter = painterResource(R.drawable.ic_analy),
+                    painter = painterResource(if (currentDestination == "historyScreen") R.drawable.ic_hist_aktif else R.drawable.ic_hist),
                     contentDescription = "",
-                    modifier = Modifier.size(25.dp)
-                ) }
-            Spacer(Modifier.width(56.dp)) // Space for the FAB in the middle
+                    modifier = Modifier.size(30.dp)
+                )
+            }
             IconButton(onClick = {
                 selectedItem = "profileScreen"
                 navController.navigate("profileScreen") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                 }
-            }) {  Image(
-                painter = painterResource(R.drawable.ic_hist),
-                contentDescription = "",
-                modifier = Modifier.size(25.dp)
-            ) }
-            IconButton(onClick = {
-                selectedItem = "profileScreen"
-                navController.navigate("profileScreen") {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                }
-            }) { Image(
-                painter = painterResource(R.drawable.ic_prof),
-                contentDescription = "",
-                modifier = Modifier.size(25.dp)
-            ) }
+            }) {
+                Image(
+                    painter = painterResource(if (currentDestination == "profileScreen") R.drawable.ic_prof_aktif else R.drawable.ic_prof),
+                    contentDescription = "",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         }
 
 
@@ -195,7 +242,11 @@ fun navBottomResikel(
                 .size(68.dp)
                 .offset(y = -62.dp)
         ) {
-            Icon(Icons.Default.Face, contentDescription = "Camera")
+            Image(
+                painter = painterResource(R.drawable.ic_kamera),
+                contentDescription = "Camera",
+                modifier = Modifier.size(25.dp)
+            )
         }
     }
 

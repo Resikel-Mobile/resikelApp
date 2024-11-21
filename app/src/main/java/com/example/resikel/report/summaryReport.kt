@@ -54,7 +54,7 @@ fun SummaryReport(modifier: Modifier = Modifier,navController: NavController) {
         TopAppBar(
             title = { Text(text = "Summary Report") },
             navigationIcon = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { navController.popBackStack()}) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 }
             },

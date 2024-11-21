@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -37,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +52,10 @@ fun signUp(modifier: Modifier = Modifier,
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
     var checked by remember { mutableStateOf(true) }
+
+
     Column(
         Modifier
             .fillMaxSize()
@@ -83,7 +88,6 @@ fun signUp(modifier: Modifier = Modifier,
         )
         TextField(
             placeholder = { Text("Email") },
-            trailingIcon = { Icon(imageVector = Icons.Filled.Done, contentDescription = "") },
             value = email,
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
@@ -98,18 +102,29 @@ fun signUp(modifier: Modifier = Modifier,
                 .padding(top = 9.dp, start = 25.dp, end = 25.dp, bottom = 8.dp)
         )
         TextField(
-            placeholder = { Text("Password") },
-            trailingIcon = { Icon(imageVector = Icons.Filled.Done, contentDescription = "")},
             value = password,
-            shape = RoundedCornerShape(15.dp),
-            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = { password = it },
+            placeholder = { Text("Password") },
+            trailingIcon = {
+                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    // Ubah ikon berdasarkan status visibilitas password
+                    Image(
+                        painter = painterResource(
+                            id = if (isPasswordVisible) R.drawable.ic_see else R.drawable.ic_dontsee
+                        ),
+                        contentDescription = if (isPasswordVisible) "Hide password" else "Show password",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            },
+            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color(242, 243, 247),
                 unfocusedContainerColor = Color(242, 243, 247),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            onValueChange = { password = it },
+            shape = RoundedCornerShape(15.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 9.dp, start = 25.dp, end = 25.dp, bottom = 6.dp)

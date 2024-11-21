@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,19 +35,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.ui.theme.montserrat
 
 @Composable
-fun signIn(navController: NavController,
-    modifier: Modifier = Modifier) {
+fun signIn(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,18 +84,29 @@ fun signIn(navController: NavController,
                 .padding(top = 15.dp, start = 25.dp, end = 25.dp, bottom = 8.dp)
         )
         TextField(
-            placeholder = { Text("Password") },
-            trailingIcon = { Icon(imageVector = Icons.Filled.Done, contentDescription = "") },
             value = password,
-            shape = RoundedCornerShape(15.dp),
-            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = { password = it },
+            placeholder = { Text("Password") },
+            trailingIcon = {
+                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    // Ubah ikon berdasarkan status visibilitas password
+                    Image(
+                        painter = painterResource(
+                            id = if (isPasswordVisible) R.drawable.ic_see else R.drawable.ic_dontsee
+                        ),
+                        contentDescription = if (isPasswordVisible) "Hide password" else "Show password",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            },
+            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color(242, 243, 247),
                 unfocusedContainerColor = Color(242, 243, 247),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            onValueChange = { password = it },
+            shape = RoundedCornerShape(15.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 9.dp, start = 25.dp, end = 25.dp, bottom = 6.dp)
@@ -103,7 +120,7 @@ fun signIn(navController: NavController,
                 .fillMaxWidth()
                 .height(80.dp)
                 .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 10.dp),
-            onClick = {navController.navigate("resikel_app")}) {
+            onClick = { navController.navigate("resikel_app") }) {
             Text(
                 text = "Sign In",
                 fontWeight = FontWeight.Normal,
@@ -165,7 +182,7 @@ fun signIn(navController: NavController,
             )
             Text(
                 modifier = Modifier.clickable { navController.navigate("sign_up") },
-                text = "Sign up", color = Color(45,204,112),
+                text = "Sign up", color = Color(45, 204, 112),
                 fontSize = 12.sp,
                 fontFamily = montserrat,
                 fontWeight = FontWeight.Normal
@@ -174,3 +191,8 @@ fun signIn(navController: NavController,
     }
 }
 
+@Preview
+@Composable
+private fun prelogin() {
+    signIn(navController = rememberNavController())
+}

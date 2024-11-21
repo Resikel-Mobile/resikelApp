@@ -12,6 +12,7 @@ import com.example.resikel.homeScreen
 import com.example.resikel.report.ReportScreen
 import com.example.resikel.report.SuccessReport
 import com.example.resikel.report.SummaryReport
+import com.example.resikel.splashScreen
 
 import com.example.resikelapp.resikelApp
 
@@ -19,7 +20,8 @@ import com.example.resikelapp.resikelApp
 @Composable
 fun resikelNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "welcome_resikel") {
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") { splashScreen(navController = navController) }
         composable("welcome_resikel"){ welcomeResikel(navController) }
         composable("sign_in") { signIn(navController) }
         composable("sign_up"){ signUp(navController = navController) }

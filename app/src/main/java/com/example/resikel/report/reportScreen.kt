@@ -120,7 +120,8 @@ fun ReportScreen(
         TopAppBar(
             title = { Text(text = "Create Report") },
             navigationIcon = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { navController.popBackStack()
+                }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 }
             },
