@@ -38,8 +38,8 @@ fun splashScreen(modifier: Modifier = Modifier,navController: NavController) {
                 )
             )
             delay(2000L)
-            navController.navigate("welcome_resikel") {
-                popUpTo("welcome_resikel") {
+            navController.navigate("onBoardingSatu") {
+                popUpTo("onBoardingSatu") {
                     inclusive = true
                 }
             }

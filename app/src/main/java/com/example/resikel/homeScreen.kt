@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +61,7 @@ import com.example.resikel.ui.theme.montserrat
 
 @Composable
 fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
+    val interactionSource = remember { MutableInteractionSource() }
     val scrollState = rememberScrollState()
     val items = listOf(
         Pair("Gopay", R.drawable.ic_gopay),
@@ -135,7 +138,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                                 contentScale = ContentScale.Crop
                             )
                             Spacer(Modifier.width(12.dp))
-                            Column{
+                            Column {
                                 Text(
                                     "Naya Rafeza",
                                     fontFamily = montserrat,
@@ -153,7 +156,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                         Button(
                             colors = ButtonDefaults.buttonColors(Color.Transparent),
                             border = BorderStroke(1.dp, Color(64, 64, 64)),
-                            onClick = {}
+                            onClick = { navController.navigate("tukarPoin") }
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.ic_refresh),
@@ -218,140 +221,185 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
-        Row(horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Surface(
-                    onClick = {},
-                    modifier = Modifier.size(65.dp),
-                    shape = RoundedCornerShape(33.dp),
-                    color = Color(243, 243, 243),
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_com),
-                        contentDescription = "",
-                        modifier = Modifier.padding(15.dp)
-                    )
-
-                }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "Community",
-                    fontFamily = montserrat,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Surface(
-                    onClick = {},
-                    modifier = Modifier.size(65.dp),
-                    shape = RoundedCornerShape(33.dp),
-                    color = Color(243, 243, 243),
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_location),
-                        contentDescription = "",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "Location",
-                    fontFamily = montserrat,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Surface(
-                    onClick = {
-                        navController.navigate("reportScreen")
-                    },
-                    modifier = Modifier.size(65.dp),
-                    shape = RoundedCornerShape(33.dp),
-                    color = Color(243, 243, 243),
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_report),
-                        contentDescription = "",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "Report",
-                    fontFamily = montserrat,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Surface(
-                    onClick = { navController.navigate("pickupScreen") },
-                    modifier = Modifier.size(65.dp),
-                    shape = RoundedCornerShape(33.dp),
-                    color = Color(243, 243, 243),
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_pickup),
-                        contentDescription = "",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "Pick Up",
-                    fontFamily = montserrat,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-        }
-        Spacer(Modifier.height(15.dp))
-        Text(
-            text = "Transfer",
-            modifier = Modifier.padding(start = 15.dp, bottom = 10.dp, top = 10.dp),
-            fontFamily = montserrat,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
-        ) {
-            items(items) { (name, iconRes) ->
-                // Setiap item di dalam LazyRow
-                Surface(
-                    shadowElevation = 4.dp,
-                    shape = RoundedCornerShape(5.dp),
-                    color = Color.White,
+//        fitur
+        Column() {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
                     modifier = Modifier
-                        .size(118.dp)
-                        .padding(5.dp)
+                        .clickable { navController.navigate("communityScreen") }
+                        .height(130.dp)
+                        .width(160.dp)
+                        .background(
+                            Color(67, 110, 255).copy(alpha = 0.09f),
+                            shape = RoundedCornerShape(25.dp)
+                        ),
+
+                    Alignment.CenterStart
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        // Ganti Icon dengan Image untuk menggunakan ikon dari drawable
-                        Image(
-                            painter = painterResource(id = iconRes),
-                            contentDescription = name,
-                            modifier = Modifier.size(40.dp) // Atur ukuran ikon
-                        )
-                        Spacer(Modifier.height(10.dp))
+                    Column(Modifier.padding(10.dp)) {
+                        Surface(
+                            modifier = Modifier.size(65.dp),
+                            shape = RoundedCornerShape(33.dp),
+                            color = Color(243, 243, 243),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_com),
+                                contentDescription = "",
+                                modifier = Modifier.padding(15.dp)
+                            )
+
+                        }
+                        Spacer(Modifier.height(6.dp))
                         Text(
-                            text = name,
-                            color = Color.Black,
+                            text = "Community",
                             fontFamily = montserrat,
-                            fontSize = 10.sp
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
+                    Image(
+                        painter = painterResource(R.drawable.bg_fiturcomu),
+                        "",
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
+                Box(
+                    modifier = Modifier
+                        .clickable { navController.navigate("locationScreen") }
+                        .height(130.dp)
+                        .width(160.dp)
+                        .background(
+                            Color(29, 205, 158).copy(alpha = 0.09f),
+                            shape = RoundedCornerShape(25.dp)
+                        ),
+                    Alignment.CenterStart
+                ) {
+                    Column(
+                        Modifier.padding(10.dp)
+                    ) {
+                        Surface(
+                            modifier = Modifier.size(65.dp),
+                            shape = RoundedCornerShape(33.dp),
+                            color = Color(243, 243, 243),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_location),
+                                contentDescription = "",
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = "Location",
+                            fontFamily = montserrat,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Image(
+                        painter = painterResource(R.drawable.bg_fiturlocation),
+                        "",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .height(130.dp)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) { navController.navigate("reportScreen") }
+                        .width(160.dp)
+                        .background(
+                            Color(255, 104, 81).copy(alpha = 0.09f),
+                            shape = RoundedCornerShape(25.dp)
+                        ),
+
+                    Alignment.CenterStart
+                ) {
+                    Column(Modifier.padding(10.dp)) {
+                        Surface(
+                            modifier = Modifier.size(65.dp),
+                            shape = RoundedCornerShape(33.dp),
+                            color = Color(243, 243, 243),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_report),
+                                contentDescription = "",
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = "Report",
+                            fontFamily = montserrat,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Image(
+                        painter = painterResource(R.drawable.bg_fiturreport),
+                        "",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) { navController.navigate("pickupScreen") }
+                        .height(130.dp)
+                        .width(160.dp)
+                        .background(
+                            Color(252, 175, 43).copy(alpha = 0.09f),
+                            shape = RoundedCornerShape(25.dp)
+                        ),
+
+                    Alignment.CenterStart
+                ) {
+                    Column(Modifier.padding(10.dp)) {
+                        Surface(
+                            modifier = Modifier.size(65.dp),
+                            shape = RoundedCornerShape(33.dp),
+                            color = Color(243, 243, 243),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_pickup),
+                                contentDescription = "",
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = "Pick Up",
+                            fontFamily = montserrat,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Image(
+                        painter = painterResource(R.drawable.bg_fiturpickup),
+                        "",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
             }
         }
 
+
+//information
         Spacer(Modifier.height(10.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -374,13 +422,14 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
         Surface(
             color = colorResource(R.color.white),
             shape = RoundedCornerShape(6.dp),
-             shadowElevation = 4.dp,
+            shadowElevation = 2.dp,
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { navController.navigate("detailInformasi") }
                 .padding(start = 20.dp, bottom = 10.dp, end = 20.dp, top = 0.dp)
                 .height(200.dp)
         ) {
-            Column {
+            Column() {
                 Image(
                     painter = painterResource(R.drawable.contethome),
                     contentDescription = "",

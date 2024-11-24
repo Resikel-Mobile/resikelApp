@@ -5,10 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.resikel.auth.forGotPassword
 import com.example.resikel.auth.signIn
 import com.example.resikel.auth.signUp
 import com.example.resikel.auth.welcomeResikel
 import com.example.resikel.homeScreen
+import com.example.resikel.intro.onBoardingDua
+import com.example.resikel.intro.onBoardingEmpat
+import com.example.resikel.intro.onBoardingSatu
+import com.example.resikel.intro.onBoardingTiga
 import com.example.resikel.report.ReportScreen
 import com.example.resikel.report.SuccessReport
 import com.example.resikel.report.SummaryReport
@@ -22,8 +27,13 @@ fun resikelNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "splash") {
         composable("splash") { splashScreen(navController = navController) }
+        composable("onBoardingSatu") { onBoardingSatu(navController = navController) }
+        composable("onBoardingDua") { onBoardingDua(navController = navController) }
+        composable("onBoardingTiga") { onBoardingTiga(navController = navController) }
+        composable("onBoardingEmpat") { onBoardingEmpat(navController = navController) }
         composable("welcome_resikel"){ welcomeResikel(navController) }
         composable("sign_in") { signIn(navController) }
+        composable("forGotPassword") { forGotPassword(navController = navController) }
         composable("sign_up"){ signUp(navController = navController) }
         composable("resikel_app"){ resikelApp() }
         composable("home_screen"){ homeScreen(navController = navController) }

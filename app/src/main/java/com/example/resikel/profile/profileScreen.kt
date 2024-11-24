@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -98,15 +99,22 @@ fun profileScreen(
                     .padding(start = 10.dp, end = 10.dp, top = 35.dp)
             )
             {
-                IconButton(
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color.Transparent),
-                    onClick = {
-                    }
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(Color.Transparent)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null // Tidak ada efek ripple
+                        ) {
+                            // Aksi ketika tombol diklik
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         Icons.Default.KeyboardArrowLeft,
-                        contentDescription = null,
-                        Modifier.size(30.dp)
+                        contentDescription = null, tint = Color.Transparent,
+                        modifier = Modifier.size(30.dp)
                     )
                 }
                 Text(
@@ -115,12 +123,22 @@ fun profileScreen(
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(colors = IconButtonDefaults.iconButtonColors(contentColor = Color.Transparent),
-                    onClick = {}) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(Color.Transparent)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null // Tidak ada efek ripple
+                        ) {
+                            // Aksi ketika tombol diklik
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
-
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null,
+                        Icons.Default.KeyboardArrowLeft,
+                        contentDescription = null, tint = Color.Transparent,
+                        modifier = Modifier.size(30.dp)
                     )
                 }
             }
@@ -224,7 +242,7 @@ fun profileScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .padding(start = 20.dp, end = 20.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth().clickable { navController.navigate("forGotPassword") },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(
@@ -294,7 +312,7 @@ fun profileScreen(
                     if (isSheetOpen) {
                         ModalBottomSheet(
                             onDismissRequest = { isSheetOpen = false },
-                                    containerColor = Color.White
+                            containerColor = Color.White
                         ) {
                             Column(
                                 modifier = Modifier
@@ -339,13 +357,13 @@ fun profileScreen(
 
                                         onClick = { isSheetOpen = false },
                                     ) {
-                                            Text(
-                                                text = "Cancel",
-                                                fontWeight = FontWeight.Bold,
-                                                color = Color.Black,
-                                                fontFamily = montserrat,
-                                                fontSize = 18.sp,
-                                            )
+                                        Text(
+                                            text = "Cancel",
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black,
+                                            fontFamily = montserrat,
+                                            fontSize = 18.sp,
+                                        )
                                     }
                                     // Tombol Log Out
                                     Button(
@@ -354,8 +372,7 @@ fun profileScreen(
                                         ),
                                         modifier = Modifier
                                             .width(160.dp)
-                                            .height(50.dp)
-                                           ,
+                                            .height(50.dp),
                                         onClick = { }
                                     ) {
                                         Text(
@@ -381,7 +398,7 @@ fun profileScreen(
                             text = "App version 1.0.0",
                             fontSize = 10.sp,
                             fontFamily = montserrat,
-                            color = Color(84,84,84)
+                            color = Color(84, 84, 84)
                         )
                     }
                 }

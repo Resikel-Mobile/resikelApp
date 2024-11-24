@@ -81,7 +81,7 @@ fun welcomeResikel(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .padding(top = 20.dp, start = 22.dp, end = 22.dp, bottom = 0.dp),
+                .padding(top = 18.dp, start = 22.dp, end = 22.dp, bottom = 2.dp),
             onClick = { navController.navigate("sign_in") }) {
             Text(
                 text = "Sign In",

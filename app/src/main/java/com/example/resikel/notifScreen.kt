@@ -100,21 +100,26 @@ fun notifScreen(modifier: Modifier = Modifier, navController: NavController) {
                 }
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 22.dp, end = 22.dp, top = 12.dp, bottom = 8.dp)
-        ) {
-            Text(
-                text = "Recent",
-                fontSize = 20.sp,
-                fontFamily = montserrat,
-                fontWeight = FontWeight.Bold
-            )
-            Text(text = "Mark all as read", fontSize = 14.sp, fontFamily = montserrat)
+
+        LazyColumn {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 22.dp, end = 22.dp, top = 12.dp, bottom = 8.dp)
+                ) {
+                    Text(
+                        text = "Recent",
+                        fontSize = 20.sp,
+                        fontFamily = montserrat,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(text = "Mark all as read", fontSize = 14.sp, fontFamily = montserrat)
+                }
+            }
+            items(15) { listNotif() }
         }
-        LazyColumn { items(15) { listNotif() } }
     }
 
 }

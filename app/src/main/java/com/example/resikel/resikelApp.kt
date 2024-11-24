@@ -52,8 +52,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.analisis.analisisScreen
+import com.example.resikel.auth.forGotPassword
+import com.example.resikel.community.MyCommunity
+import com.example.resikel.detailInformasi
 import com.example.resikel.historyScreen
 import com.example.resikel.homeScreen
+import com.example.resikel.intro.onBoardingDua
+import com.example.resikel.intro.onBoardingSatu
+import com.example.resikel.location.MapScreen
 import com.example.resikel.navigation.onproggress
 import com.example.resikel.notifScreen
 import com.example.resikel.pickup.pickupScreen
@@ -66,6 +72,8 @@ import com.example.resikel.profile.profileScreen
 import com.example.resikel.report.ReportScreen
 import com.example.resikel.report.SuccessReport
 import com.example.resikel.report.SummaryReport
+import com.example.resikel.tukarPoin
+import com.example.resikel.viewmodel.MapViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +94,14 @@ fun resikelApp(
         "pickupScreen",
         "trashItemList",
         "setLocation",
-        "trackingOrder", "successDelivery", "notifScreen"
+        "trackingOrder",
+        "successDelivery",
+        "notifScreen",
+        "locationScreen",
+        "communityScreen",
+        "analisisScreen",
+        "forGotPassword",
+        "detailInformasi"
     )
     val noBottomBarScreens = listOf(
         "reportScreen",
@@ -96,7 +111,13 @@ fun resikelApp(
         "pickupScreen",
         "trashItemList",
         "setLocation",
-        "trackingOrder", "successDelivery", "notifScreen"
+        "trackingOrder",
+        "successDelivery",
+        "notifScreen",
+        "locationScreen",
+        "communityScreen",
+        "forGotPassword",
+        "detailInformasi"
     )
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -134,11 +155,13 @@ fun resikelApp(
                     navController = navController,
                     startDestination = "homeScreen"
                 ) {
+                    composable("onBoardingSatu") { onBoardingSatu(navController = navController) }
                     composable("homeScreen") { homeScreen(navController = navController) }
                     composable("notifScreen") { notifScreen(navController = navController) }
                     composable("historyScreen") { historyScreen() }
-                    composable("analisisScreen") { onproggress() }
+                    composable("analisisScreen") { analisisScreen() }
                     composable("reportScreen") { ReportScreen(navController = navController) }
+                    composable("tukarPoin") { tukarPoin() }
                     composable("pickupScreen") { pickupScreen(navController = navController) }
                     composable("trashItemList") { trashItemList(navController = navController) }
                     composable("setLocation") { setLocation(navController = navController) }
@@ -148,6 +171,10 @@ fun resikelApp(
                     composable("successScreen") { SuccessReport(navController = navController) }
                     composable("profileScreen") { profileScreen(navController = navController) }
                     composable("editProfile") { editProfile(navController = navController) }
+                    composable("communityScreen") { MyCommunity(navController = navController) }
+                    composable("locationScreen") { MapScreen(mapViewModel = MapViewModel()) }
+                    composable("detailInformasi") { detailInformasi() }
+                    composable("forGotPassword") { forGotPassword(navController = navController) }
                 }
             }
         }
