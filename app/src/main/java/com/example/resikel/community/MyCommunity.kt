@@ -2,6 +2,7 @@ package com.example.resikel.community
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -51,13 +53,20 @@ fun MyCommunity(modifier: Modifier = Modifier,navController: NavController) {
             title = { Text(text = "Community") },
             navigationIcon = {
                 IconButton(onClick = {navController.popBackStack()}) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    Box(
+                        modifier = Modifier
+                            .background(color = Color.White, CircleShape)
+                            .padding(8.dp)
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
+
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = primaryGreen,
                 titleContentColor = primaryWhite,
-                navigationIconContentColor = primaryWhite
+//                navigationIconContentColor = primaryWhite
             )
         )
     }
@@ -108,7 +117,10 @@ fun MyCommunity(modifier: Modifier = Modifier,navController: NavController) {
             ) {
                 //Community Item - OnClick menuju halaman Detail Community
                 Row(
-                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { navController.navigate("CommunityScreen") },
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -117,7 +129,11 @@ fun MyCommunity(modifier: Modifier = Modifier,navController: NavController) {
                         modifier = Modifier.size(64.dp)
                     )
                     Text(text = "Resikel", fontWeight = FontWeight.Bold)
-                    Image(imageVector = Icons.Default.CheckCircle, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = Color.Cyan
+                    )
                 }
                 HorizontalDivider()
                 //Community Item - OnClick menuju halaman Announcement
@@ -145,7 +161,7 @@ fun MyCommunity(modifier: Modifier = Modifier,navController: NavController) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Top,
-                    modifier = Modifier.padding(top = 4.dp, start = 8.dp, end = 8.dp)
+                    modifier = Modifier.padding(top = 4.dp, start = 8.dp, end = 8.dp).clickable { navController.navigate("PersonalChat") }
                 ) {
                     Image(
                         painterResource(R.drawable.resikel_green),
@@ -159,7 +175,11 @@ fun MyCommunity(modifier: Modifier = Modifier,navController: NavController) {
                     ) {
                         Row {
                             Text(text = "Kantor Pejantara", fontWeight = FontWeight.Bold)
-                            Image(imageVector = Icons.Default.CheckCircle, contentDescription = null)
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = Color.Cyan
+                            )
                         }
                         Text(
                             text = "Silahkan Mang bisa datang langsung Kesini",
@@ -175,7 +195,9 @@ fun MyCommunity(modifier: Modifier = Modifier,navController: NavController) {
             }
         }
     }
+
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun MyCommunityPreview() {

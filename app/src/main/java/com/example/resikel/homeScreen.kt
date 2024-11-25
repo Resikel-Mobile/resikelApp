@@ -156,7 +156,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                         Button(
                             colors = ButtonDefaults.buttonColors(Color.Transparent),
                             border = BorderStroke(1.dp, Color(64, 64, 64)),
-                            onClick = { navController.navigate("tukarPoin") }
+                            onClick = { navController.navigate("onProggress") }
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.ic_refresh),
@@ -229,7 +229,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             ) {
                 Box(
                     modifier = Modifier
-                        .clickable { navController.navigate("communityScreen") }
+                        .clickable { navController.navigate("MyCommunity") }
                         .height(130.dp)
                         .width(160.dp)
                         .background(

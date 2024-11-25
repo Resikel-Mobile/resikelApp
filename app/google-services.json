@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "608984598411",
+    "project_id": "resikel-70ae7",
+    "storage_bucket": "resikel-70ae7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608984598411:android:a7fdb7c3401cee2c66518e",
+        "android_client_info": {
+          "package_name": "com.example.resikel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKwecIu9x0wXRg7BpIW4zlLHhi78C-I6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

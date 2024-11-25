@@ -1,5 +1,6 @@
 package com.example.resikel.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,7 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -49,12 +53,28 @@ import com.example.resikel.ui.theme.montserrat
 @Composable
 fun signIn(
     navController: NavController,
-    modifier: Modifier = Modifier
+    authViewModel: AuthViewModel,
+    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
+
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Authenticated -> navController.navigate("resikelApp")
+            is AuthState.Error -> Toast.makeText(
+                context,
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
+            ).show()
+
+            else -> Unit
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -72,7 +92,7 @@ fun signIn(
         )
         TextField(
             placeholder = { Text("Username") },
-            value = name,
+            value = email,
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color(242, 243, 247),
@@ -80,7 +100,7 @@ fun signIn(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            onValueChange = { name = it },
+            onValueChange = { email = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 15.dp, start = 25.dp, end = 25.dp, bottom = 8.dp)
@@ -122,7 +142,9 @@ fun signIn(
                 .fillMaxWidth()
                 .height(80.dp)
                 .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 10.dp),
-            onClick = { navController.navigate("resikel_app") }) {
+            onClick = { authViewModel.login(email, password) },
+            enabled = authState.value != AuthState.Loading
+        ) {
             Text(
                 text = "Sign In",
                 fontWeight = FontWeight.Normal,
@@ -134,8 +156,10 @@ fun signIn(
         Text(
             modifier = Modifier
                 .padding(10.dp)
-                .clickable( interactionSource = interactionSource,
-                    indication = null) { navController.navigate("forGotPassword") },
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) { navController.navigate("forGotPassword") },
             text = "Forgot your password?",
             color = Color(161, 164, 178),
             fontSize = 12.sp,
@@ -199,5 +223,5 @@ fun signIn(
 @Preview
 @Composable
 private fun prelogin() {
-    signIn(navController = rememberNavController())
+    signIn(navController = rememberNavController(), authViewModel = AuthViewModel())
 }

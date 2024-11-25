@@ -37,5 +37,6 @@ val Typography = Typography(
 
 val montserrat = FontFamily(
     Font(R.font.montserrat_regular, FontWeight.Normal),
-    Font(R.font.montserrat_bold, FontWeight.Bold)
+    Font(R.font.montserrat_bold, FontWeight.Bold),
+    Font(R.font.montserrat_medium,FontWeight.Medium)
 )

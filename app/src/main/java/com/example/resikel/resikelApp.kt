@@ -52,8 +52,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.analisis.analisisScreen
+import com.example.resikel.auth.AuthViewModel
 import com.example.resikel.auth.forGotPassword
+import com.example.resikel.auth.signIn
+import com.example.resikel.auth.signUp
+import com.example.resikel.community.CommunityChat
+import com.example.resikel.community.CommunityDetail
+import com.example.resikel.community.CommunityMember
+import com.example.resikel.community.CommunityScreen
 import com.example.resikel.community.MyCommunity
+import com.example.resikel.community.PersonalChat
+
 import com.example.resikel.detailInformasi
 import com.example.resikel.historyScreen
 import com.example.resikel.homeScreen
@@ -85,6 +94,7 @@ fun resikelApp(
 
     val noTopBarScreens = listOf(
         "homeScreen",
+        "resikelApp",
         "reportScreen",
         "summaryScreen",
         "successScreen",
@@ -98,10 +108,15 @@ fun resikelApp(
         "successDelivery",
         "notifScreen",
         "locationScreen",
-        "communityScreen",
         "analisisScreen",
         "forGotPassword",
-        "detailInformasi"
+        "CommunityChat",
+        "MyCommunity",
+        "CommunityScreen",
+        "CommunityDetail",
+        "CommunityMember",
+        "PersonalChat",
+        "detailInformasi", "sign_in", "sign_up"
     )
     val noBottomBarScreens = listOf(
         "reportScreen",
@@ -115,9 +130,13 @@ fun resikelApp(
         "successDelivery",
         "notifScreen",
         "locationScreen",
-        "communityScreen",
-        "forGotPassword",
-        "detailInformasi"
+        "CommunityChat",
+        "MyCommunity",
+        "CommunityScreen",
+        "CommunityDetail",
+        "CommunityMember",
+        "PersonalChat",
+        "forGotPassword", "sign_in", "sign_up"
     )
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -132,7 +151,7 @@ fun resikelApp(
                             text = when (currentDestination) {
                                 "profileScreen" -> "Profile"
                                 "analisisScreen" -> "Grafik"
-                                else -> "ResikelApp"
+                                else -> "On Proggress"
                             },
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
@@ -155,8 +174,22 @@ fun resikelApp(
                     navController = navController,
                     startDestination = "homeScreen"
                 ) {
-                    composable("onBoardingSatu") { onBoardingSatu(navController = navController) }
+                    composable("sign_in") { signIn(navController, authViewModel = AuthViewModel()) }
+                    composable("sign_up") {
+                        signUp(
+                            navController = navController,
+                            authViewModel = AuthViewModel()
+                        )
+                    }
+                    composable("resikelApp") { resikelApp() }
+                    composable("onBoardingSatu") {
+                        onBoardingSatu(
+                            navController = navController,
+                            authViewModel = AuthViewModel()
+                        )
+                    }
                     composable("homeScreen") { homeScreen(navController = navController) }
+                    composable("onProggress") { onproggress() }
                     composable("notifScreen") { notifScreen(navController = navController) }
                     composable("historyScreen") { historyScreen() }
                     composable("analisisScreen") { analisisScreen() }
@@ -169,11 +202,21 @@ fun resikelApp(
                     composable("successDelivery") { successDelivery(navController = navController) }
                     composable("summaryScreen") { SummaryReport(navController = navController) }
                     composable("successScreen") { SuccessReport(navController = navController) }
-                    composable("profileScreen") { profileScreen(navController = navController) }
+                    composable("profileScreen") {
+                        profileScreen(
+                            navController = navController,
+                            authViewModel = AuthViewModel()
+                        )
+                    }
                     composable("editProfile") { editProfile(navController = navController) }
-                    composable("communityScreen") { MyCommunity(navController = navController) }
+                    composable("MyCommunity") { MyCommunity(navController = navController) }
+                    composable("CommunityScreen") { CommunityScreen(navController = navController) }
+                    composable("CommunityChat") { CommunityChat(navController = navController) }
+                    composable("CommunityDetail") { CommunityDetail(navController = navController) }
+                    composable("CommunityMember") { CommunityMember(navController = navController) }
+                    composable("PersonalChat") { PersonalChat(navController = navController) }
                     composable("locationScreen") { MapScreen(mapViewModel = MapViewModel()) }
-                    composable("detailInformasi") { detailInformasi() }
+                    composable("detailInformasi") { detailInformasi(navController = navController) }
                     composable("forGotPassword") { forGotPassword(navController = navController) }
                 }
             }
