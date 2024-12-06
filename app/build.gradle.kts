@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,7 +72,14 @@ dependencies {
 
     //google Map
     implementation("com.google.maps.android:maps-compose:4.3.3")
+    implementation ("com.google.android.material:material:1.6.0")
+
     //getting location
     implementation("com.google.android.gms:play-services-location:21.1.0")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
+//    retrofit untuk API
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
 }

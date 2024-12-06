@@ -92,15 +92,27 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     modifier = Modifier
                         .size(175.dp)
                         .offset(y = -30.dp)
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.maskot_rakun),
+                        contentDescription = "", modifier = Modifier
+                            .size(40.dp)
+                            .offset(y = 35.dp,x = -30.dp)
+                            .clickable {  navController.navigate("chatScreen") }
+                    )
 
-                )
-                Image(
-                    painter = painterResource(R.drawable.ic_notif),
-                    contentDescription = "", modifier = Modifier
-                        .size(25.dp)
-                        .offset(y = 35.dp)
-                        .clickable { navController.navigate("notifScreen") }
-                )
+                    Image(
+                        painter = painterResource(R.drawable.ic_notif),
+                        contentDescription = "", modifier = Modifier
+                            .size(45.dp)
+                            .offset(y = 35.dp, x = -20.dp)
+                            .clickable { navController.navigate("notifScreen") }
+                    )
+                }
             }
 
             Surface(

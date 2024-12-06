@@ -13,7 +13,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.resikel.auth.AuthViewModel
+import com.example.resikel.chatbot.ChatViewModel
 
 import com.example.resikel.navigation.resikelNavigation
 import com.example.resikel.report.ReportScreen
@@ -31,7 +33,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    resikelNavigation(authViewModel = authViewModel)
+                    val chatViewModel: ChatViewModel = viewModel()
+                    resikelNavigation(authViewModel = authViewModel,chatViewModel)
                 }
             }
         }

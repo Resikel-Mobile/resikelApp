@@ -57,12 +57,17 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.resikel.auth.AuthState
+import com.example.resikel.auth.AuthViewModel
+
 import com.example.resikel.ui.theme.ResikelTheme
 import com.example.resikel.ui.theme.montserrat
 import com.example.resikel.ui.theme.primaryGreen
 import com.example.resikel.ui.theme.primaryGrey
 import com.example.resikel.ui.theme.primaryWhite
 import com.example.resikel.ui.theme.secondaryGreen
+import com.google.type.LatLng
+
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -72,11 +77,13 @@ import java.util.Objects
 @Composable
 fun ReportScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,authViewModel: AuthViewModel
 ) {
+    var location by remember { mutableStateOf<LatLng?>(null) }
 
     //description editText
     var description by remember { mutableStateOf("") }
+    var locationCode by remember { mutableStateOf("") }
 
     var checked by remember { mutableStateOf(false) }
 
@@ -172,7 +179,7 @@ fun ReportScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
+                                .height(180.dp)
                                 .background(color = primaryGrey, shape = RoundedCornerShape(8.dp))
                         ) {
                             if (selectedImageUri != null) {
@@ -270,7 +277,10 @@ fun ReportScreen(
                         .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
                     onClick = {
                         //TODO: ke report Screen dengan membawa data URI, description, location, data reporter
-                        navController.navigate("summaryScreen")
+                        val user = authViewModel.authState.value as? AuthState.Authenticated
+                        val userName = user?.user?.displayName ?: "Unknown User"
+
+                        navController.navigate("summaryScreen?description=${description}&location=${locationCode}&imageUri=${selectedImageUri.toString()}&userName=${userName}")
                     }) {
                     Text(
                         text = "Continue",
@@ -348,12 +358,6 @@ fun ReportScreen(
 }
 
 
-
-@Preview
-@Composable
-private fun prereportScreen() {
-    ReportScreen(navController = rememberNavController())
-}
 
 fun Context.createImageFile(): File {
     val timeStamp = SimpleDateFormat("yyyy_MM_dd_HH:mm:ss").format(Date())

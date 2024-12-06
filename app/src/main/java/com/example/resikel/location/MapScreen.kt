@@ -51,6 +51,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+
 //TODO: GET DATA FROM API & IMPLEMENT CURRENT LOCATION N SET POLYLINE TO DESINATION ROUTE
 @Composable
 fun MapScreen(mapViewModel: MapViewModel) {

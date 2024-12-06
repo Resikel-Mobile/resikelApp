@@ -46,16 +46,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.resikel.R
 import com.example.resikel.analisis.analisisScreen
 import com.example.resikel.auth.AuthViewModel
 import com.example.resikel.auth.forGotPassword
 import com.example.resikel.auth.signIn
 import com.example.resikel.auth.signUp
+import com.example.resikel.chatbot.ChatViewModel
+import com.example.resikel.chatbot.chatScreen
 import com.example.resikel.community.CommunityChat
 import com.example.resikel.community.CommunityDetail
 import com.example.resikel.community.CommunityMember
@@ -96,7 +100,7 @@ fun resikelApp(
         "homeScreen",
         "resikelApp",
         "reportScreen",
-        "summaryScreen",
+        "summaryScreen?description={description}&location={location}&imageUri={imageUri}",
         "successScreen",
         "profileScreen",
         "editProfile",
@@ -116,11 +120,11 @@ fun resikelApp(
         "CommunityDetail",
         "CommunityMember",
         "PersonalChat",
-        "detailInformasi", "sign_in", "sign_up"
+        "detailInformasi", "sign_in", "sign_up","chatScreen"
     )
     val noBottomBarScreens = listOf(
         "reportScreen",
-        "summaryScreen",
+        "summaryScreen?description={description}&location={location}&imageUri={imageUri}",
         "successScreen",
         "editProfile",
         "pickupScreen",
@@ -135,12 +139,13 @@ fun resikelApp(
         "CommunityScreen",
         "CommunityDetail",
         "CommunityMember",
-        "PersonalChat",
-        "forGotPassword", "sign_in", "sign_up"
+        "PersonalChat","detailInformasi",
+        "forGotPassword", "sign_in", "sign_up","chatScreen"
     )
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination?.route
+
     Scaffold(
         topBar = {
             if (currentDestination !in noTopBarScreens) {
@@ -193,14 +198,34 @@ fun resikelApp(
                     composable("notifScreen") { notifScreen(navController = navController) }
                     composable("historyScreen") { historyScreen() }
                     composable("analisisScreen") { analisisScreen() }
-                    composable("reportScreen") { ReportScreen(navController = navController) }
+                    composable("reportScreen") { ReportScreen(navController = navController, authViewModel = AuthViewModel()) }
                     composable("tukarPoin") { tukarPoin() }
                     composable("pickupScreen") { pickupScreen(navController = navController) }
                     composable("trashItemList") { trashItemList(navController = navController) }
                     composable("setLocation") { setLocation(navController = navController) }
                     composable("trackingOrder") { trackingOrder(navController = navController) }
                     composable("successDelivery") { successDelivery(navController = navController) }
-                    composable("summaryScreen") { SummaryReport(navController = navController) }
+                    composable(
+                        "summaryScreen?description={description}&location={location}&imageUri={imageUri}",
+                        arguments = listOf(
+                            navArgument("description") { type = NavType.StringType },
+                            navArgument("location") { type = NavType.StringType },
+                            navArgument("imageUri") { type = NavType.StringType }
+                        )
+                    ) { backStackEntry ->
+                        val description = backStackEntry.arguments?.getString("description") ?: ""
+                        val locationCode = backStackEntry.arguments?.getString("location") ?: ""
+                        val imageUriString = backStackEntry.arguments?.getString("imageUri")
+
+                        SummaryReport(
+                            navController = navController,
+                            authViewModel = AuthViewModel(), // Inisialisasi atau gunakan DI jika ada
+                            description = description,
+                            locationCode = locationCode,
+                            imageUriString = imageUriString
+                        )
+                    }
+
                     composable("successScreen") { SuccessReport(navController = navController) }
                     composable("profileScreen") {
                         profileScreen(
@@ -218,11 +243,13 @@ fun resikelApp(
                     composable("locationScreen") { MapScreen(mapViewModel = MapViewModel()) }
                     composable("detailInformasi") { detailInformasi(navController = navController) }
                     composable("forGotPassword") { forGotPassword(navController = navController) }
+                    composable("chatScreen") { chatScreen(navController = navController, chatViewModel = ChatViewModel()) }
                 }
             }
         }
     )
 }
+
 
 @Composable
 fun navBottomResikel(
@@ -231,6 +258,9 @@ fun navBottomResikel(
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination?.route
     var selectedItem by remember { mutableStateOf("homeScreen") }
+
+    // Sinkronkan selectedItem dengan rute saat ini
+    selectedItem = currentDestination ?: "homeScreen"
 
     Box {
         Image(
@@ -306,7 +336,7 @@ fun navBottomResikel(
             containerColor = Color(27, 94, 60),
             contentColor = Color.White,
             shape = RoundedCornerShape(35.dp),
-            onClick = { /* action */ },
+            onClick = { },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .size(68.dp)
