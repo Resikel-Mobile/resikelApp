@@ -3,6 +3,7 @@ package com.example.resikel.report
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,7 +20,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -33,6 +36,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,29 +72,39 @@ import com.example.resikel.ui.theme.primaryGreen
 import com.example.resikel.ui.theme.primaryGrey
 import com.example.resikel.ui.theme.primaryWhite
 import com.example.resikel.ui.theme.secondaryGreen
+import com.google.android.gms.location.LocationServices
 import com.google.type.LatLng
+import kotlinx.coroutines.launch
 
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.Objects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,authViewModel: AuthViewModel
+    navController: NavController, authViewModel: AuthViewModel
 ) {
-    var location by remember { mutableStateOf<LatLng?>(null) }
+    val context = LocalContext.current
+    var locationAddress by remember { mutableStateOf("No location selected") }
+
+    val fusedLocationProviderClient =
+        remember { LocationServices.getFusedLocationProviderClient(context) }
 
     //description editText
     var description by remember { mutableStateOf("") }
     var locationCode by remember { mutableStateOf("") }
 
+    // Snackbar state
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
     var checked by remember { mutableStateOf(false) }
 
     //camera
-    val context = LocalContext.current
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(
         Objects.requireNonNull(context),
@@ -121,30 +137,35 @@ fun ReportScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { selectedImageUri = uri }
     )
-
+    val scrollState = rememberScrollState()
     //TODO: Buat customize top Bar
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(text = "Create Report") },
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack()
-                }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = primaryGreen,
-                titleContentColor = primaryWhite,
-                navigationIconContentColor = primaryWhite
+    Scaffold(
+
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Create Report") },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = primaryGreen,
+                    titleContentColor = primaryWhite,
+                    navigationIconContentColor = primaryWhite
+                )
             )
-        )
-    }) { innerPadding ->
+        }, snackbarHost = { SnackbarHost(hostState = snackbarHostState) } // Tambahkan ini
+    ) { innerPadding ->
         val isOpenDialog = remember { mutableStateOf(false) }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(scrollState)
                 .background(color = primaryWhite),
         ) {
             Box(
@@ -237,18 +258,51 @@ fun ReportScreen(
                             text = "Set a more accurate illegal TPS report location",
                             fontSize = 13.sp
                         )
-                        Row {
+                        Column  {
                             Spacer(modifier = Modifier.weight(1f))
                             Button(
                                 onClick = {
-
+                                    coroutineScope.launch {
+                                        val permissionCheckResult =
+                                            ContextCompat.checkSelfPermission(
+                                                context,
+                                                Manifest.permission.ACCESS_FINE_LOCATION
+                                            )
+                                        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                                            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                                                if (location != null) {
+                                                    val geocoder = Geocoder(context, Locale.getDefault())
+                                                    val addressList = geocoder.getFromLocation(
+                                                        location.latitude,
+                                                        location.longitude,
+                                                        1
+                                                    )
+                                                    locationAddress = addressList?.firstOrNull()?.getAddressLine(0)
+                                                        ?: "Unable to get address"
+                                                } else {
+                                                    coroutineScope.launch {
+                                                        snackbarHostState.showSnackbar("Location not found")
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            coroutineScope.launch {
+                                                snackbarHostState.showSnackbar("Location permission not granted")
+                                            }
+                                        }
+                                    }
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = secondaryGreen,
+                                    containerColor = secondaryGreen
                                 )
                             ) {
                                 Text(text = "Select Location")
                             }
+                            Text(
+                                text = locationAddress,
+                                fontSize = 13.sp,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
                         }
                         Row(
                             horizontalArrangement = Arrangement.SpaceAround,
@@ -256,7 +310,17 @@ fun ReportScreen(
                         ) {
                             Checkbox(
                                 checked = checked,
-                                onCheckedChange = { checked = it }
+                                onCheckedChange = {
+                                    if (description.isNotBlank() && selectedImageUri != null) {
+                                        checked = it
+                                    } else {
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                "Please fill in the description and upload an image."
+                                            )
+                                        }
+                                    }
+                                }
                             )
                             Text(text = "I'm responsible for the report I make", fontSize = 13.sp)
                         }
@@ -356,7 +420,6 @@ fun ReportScreen(
 
 
 }
-
 
 
 fun Context.createImageFile(): File {

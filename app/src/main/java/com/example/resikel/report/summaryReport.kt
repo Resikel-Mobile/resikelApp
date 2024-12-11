@@ -1,22 +1,28 @@
 package com.example.resikel.report
 
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -42,11 +48,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.resikel.R
 import com.example.resikel.auth.AuthState
 import com.example.resikel.auth.AuthViewModel
 import com.example.resikel.ui.theme.ResikelTheme
@@ -71,6 +80,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,12 +93,15 @@ fun SummaryReport(
 ) {
     val authState by authViewModel.authState.observeAsState(AuthState.Unauthenticated)
     val userEmail = when (authState) {
-        is AuthState.Authenticated -> (authState as AuthState.Authenticated).user?.email ?: "Unknown User"
+        is AuthState.Authenticated -> (authState as AuthState.Authenticated).user?.email
+            ?: "Unknown User"
+
         else -> "Unknown User"
     }
 
     val imageUri = Uri.parse(imageUriString)
     val scrollState = rememberScrollState()
+    val interactionSource = remember { MutableInteractionSource() }
 
     var showDialog by remember { mutableStateOf(false) } // State for dialog visibility
 
@@ -96,8 +109,29 @@ fun SummaryReport(
         TopAppBar(
             title = { Text(text = "Summary Report") },
             navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+
+                        .size(56.dp)
+                        .padding(horizontal = 8.dp, vertical = 8.dp)
+                        .background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(36.dp)
+                        )
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) {
+
+                        }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrowleft),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = Color.Transparent
+                    )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -143,13 +177,13 @@ fun SummaryReport(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(text = "Description", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            text = "Description",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                         Text(text = description, fontSize = 12.sp)
                         Text(text = "Location", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                        Row {
-                            Icon(Icons.Default.LocationOn, contentDescription = null)
-                            Text(text = locationCode, fontSize = 12.sp)
-                        }
                         LocationMapView()
                     }
                 }
@@ -168,15 +202,21 @@ fun SummaryReport(
                     ) {
                         Text(text = "Reporter", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Box(
+                            Image(
+                                painter = painterResource(R.drawable.user_default),
+                                contentDescription = "nahidul",
                                 modifier = Modifier
-                                    .width(48.dp)
-                                    .height(48.dp)
+                                    .size(45.dp)
                                     .clip(CircleShape)
-                                    .background(color = primaryGrey)
+                                    .border(2.dp, Color(64, 64, 64), CircleShape),
+                                contentScale = ContentScale.Crop
                             )
                             Column {
-                                Text(text = userEmail, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                                Text(
+                                    text = userEmail,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
                                 Text(text = "Report Created", fontSize = 12.sp)
                             }
                         }
@@ -184,8 +224,16 @@ fun SummaryReport(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "24 October 2024", fontSize = 12.sp, fontWeight = FontWeight.Light)
-                            Text(text = "12:30:05 WIB", fontSize = 12.sp, fontWeight = FontWeight.Light)
+                            Text(
+                                text = "24 October 2024",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light
+                            )
+                            Text(
+                                text = "12:30:05 WIB",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light
+                            )
                         }
                     }
                 }
@@ -241,22 +289,31 @@ fun SummaryReport(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = {
-                Text(text = "Discard Changes?")
+                Text(
+                    text = "Discard Changes?",
+                    fontFamily = montserrat,
+                    fontWeight = FontWeight.Medium
+                )
             },
             text = {
-                Text(text = "Are you sure you want to discard your changes and go back?")
+                Text(
+                    text = "Are you sure you want to discard your changes and go back?",
+                    fontFamily = montserrat
+                )
             },
             confirmButton = {
                 TextButton(onClick = {
                     showDialog = false
                     navController.popBackStack("reportScreen", inclusive = false)
                 }) {
-                    Text(text = "Discard")
+                    Text(text = "Discard", fontFamily = montserrat, fontWeight = FontWeight.Medium, color = colorResource(
+                        R.color.main_green))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text(text = "Cancel")
+                    Text(text = "Cancel", fontFamily = montserrat, fontWeight = FontWeight.Medium, color = colorResource(
+                        R.color.main_green))
                 }
             }
         )
@@ -264,23 +321,42 @@ fun SummaryReport(
 }
 
 
-
-
 @Composable
 fun LocationMapView() {
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     var location by remember { mutableStateOf<Location?>(null) }
+    var address by remember { mutableStateOf("Fetching address...") } // State untuk alamat
 
     LaunchedEffect(Unit) {
         fusedLocationClient.lastLocation.addOnSuccessListener { loc: Location? ->
             location = loc
+            loc?.let {
+                // Mendapatkan alamat menggunakan Geocoder
+                val geocoder = Geocoder(context, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
+                address = addresses?.firstOrNull()?.getAddressLine(0) ?: "Unknown Location"
+            }
         }
     }
 
     location?.let {
+        // Tampilkan alamat di bawah peta
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(Icons.Default.LocationOn, contentDescription = null, tint = primaryGreen)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = address,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Black
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
         GoogleMap(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth().height(150.dp),
             cameraPositionState = rememberCameraPositionState {
                 position = CameraPosition.fromLatLngZoom(
                     LatLng(it.latitude, it.longitude), 15f

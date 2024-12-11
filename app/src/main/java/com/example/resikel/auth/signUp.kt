@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -55,25 +56,29 @@ fun signUp(
     modifier: Modifier = Modifier,
     navController: NavController, authViewModel: AuthViewModel
 ) {
-    var name by remember { mutableStateOf("") }
+    val authState by authViewModel.authState.observeAsState(AuthState.Unauthenticated)
+    val context = LocalContext.current
+    var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    var checked by remember { mutableStateOf(true) }
+    var checked by remember { mutableStateOf(false) }
 
-    val authState = authViewModel.authState.observeAsState()
-    val context = LocalContext.current
-
-    LaunchedEffect(authState.value) {
-        when (authState.value) {
-            is AuthState.Authenticated -> navController.navigate("resikelApp")
-            is AuthState.Error -> Toast.makeText(
-                context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
-            ).show()
-
-            else -> Unit
+    when (authState) {
+        is AuthState.Authenticated -> {
+            LaunchedEffect(Unit) {
+                navController.navigate("resikelApp") {
+                    popUpTo("signup") { inclusive = true }
+                }
+            }
         }
+        is AuthState.Error -> {
+            Text((authState as AuthState.Error).message, color = Color.Red)
+        }
+        is AuthState.Loading -> {
+            CircularProgressIndicator()
+        }
+        else -> {}
     }
 
 
@@ -94,7 +99,7 @@ fun signUp(
         )
         TextField(
             placeholder = { Text("Username") },
-            value = name,
+            value = username,
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color(242, 243, 247),
@@ -102,7 +107,7 @@ fun signUp(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            onValueChange = { name = it },
+            onValueChange = { username = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 15.dp, start = 25.dp, end = 25.dp, bottom = 8.dp)
@@ -185,8 +190,10 @@ fun signUp(
                 .fillMaxWidth()
                 .height(80.dp)
                 .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 8.dp),
-            onClick = { authViewModel.signup(email, password) },
-            enabled = authState.value != AuthState.Loading
+            onClick = {
+
+                authViewModel.signup(email, password, username) },
+
         ) {
             Text(
                 text = "Sign Up",

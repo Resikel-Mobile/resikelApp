@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
@@ -38,10 +40,17 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,10 +66,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.resikel.auth.AuthState
+import com.example.resikel.auth.AuthViewModel
 import com.example.resikel.ui.theme.montserrat
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun homeScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
+
+    val username by authViewModel.username.observeAsState("")
     val interactionSource = remember { MutableInteractionSource() }
     val scrollState = rememberScrollState()
     val items = listOf(
@@ -77,43 +95,58 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
             .background(Color(252, 255, 252))
     ) {
         Box {
-            Row(
-
-                horizontalArrangement = Arrangement.spacedBy(176.dp),
+            Surface(
                 modifier = Modifier
-                    .background(Color(27, 94, 60))
                     .fillMaxWidth()
-                    .padding(top = 10.dp)
+                    .height(130.dp), // Sesuaikan tinggi
+                color = colorResource(R.color.main_green),
+                shadowElevation = 4.dp
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_logohome),
-                    contentDescription = "",
-
-                    modifier = Modifier
-                        .size(175.dp)
-                        .offset(y = -30.dp)
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.maskot_rakun),
-                        contentDescription = "", modifier = Modifier
-                            .size(40.dp)
-                            .offset(y = 35.dp,x = -30.dp)
-                            .clickable {  navController.navigate("chatScreen") }
-                    )
+                    // Baris pertama (judul dan navigasi)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_logohome),
+                                "",
+                                modifier = Modifier.size(165.dp)
+                            )
+                        }
 
-                    Image(
-                        painter = painterResource(R.drawable.ic_notif),
-                        contentDescription = "", modifier = Modifier
-                            .size(45.dp)
-                            .offset(y = 35.dp, x = -20.dp)
-                            .clickable { navController.navigate("notifScreen") }
-                    )
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.maskot_rakun),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clickable { navController.navigate("chatScreen") }
+                            )
+
+                            Image(
+                                painter = painterResource(R.drawable.ic_notif),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clickable { navController.navigate("notifScreen") }
+                            )
+                        }
+                    }
                 }
             }
+
 
             Surface(
                 shape = RoundedCornerShape(20.dp),
@@ -141,7 +174,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                     ) {
                         Row {
                             Image(
-                                painter = painterResource(R.drawable.pp),
+                                painter = painterResource(R.drawable.user_default),
                                 contentDescription = "nahidul",
                                 modifier = Modifier
                                     .size(50.dp)
@@ -152,7 +185,7 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
                             Spacer(Modifier.width(12.dp))
                             Column {
                                 Text(
-                                    "Naya Rafeza",
+                                    text = "$username",
                                     fontFamily = montserrat,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
@@ -488,6 +521,6 @@ fun homeScreen(modifier: Modifier = Modifier, navController: NavController) {
 @Preview
 @Composable
 private fun prehomescreen() {
-    homeScreen(navController = rememberNavController())
+    homeScreen(navController = rememberNavController(), authViewModel = AuthViewModel())
 }
 

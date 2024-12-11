@@ -41,7 +41,7 @@ fun resikelNavigation(authViewModel: AuthViewModel,chatViewModel: ChatViewModel)
         composable("sign_up"){ signUp(navController = navController, authViewModel = authViewModel) }
         composable("forGotPassword") { forGotPassword(navController = navController) }
         composable("resikelApp"){ resikelApp() }
-        composable("home_screen"){ homeScreen(navController = navController) }
+        composable("home_screen"){ homeScreen(navController = navController, authViewModel = AuthViewModel()) }
         composable("reportScreen"){ ReportScreen(navController = navController, authViewModel = authViewModel) }
         composable(
             "summaryScreen?description={description}&location={location}&imageUri={imageUri}",

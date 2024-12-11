@@ -66,12 +66,19 @@ fun signIn(
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
-            is AuthState.Authenticated -> navController.navigate("resikelApp")
+            is AuthState.Authenticated -> {
+                // Ambil data pengguna dari Firestore setelah login berhasil
+                val userId = (authState.value as AuthState.Authenticated).user?.uid
+                if (userId != null) {
+                    authViewModel.fetchUserData(userId)
+                }
+                // Navigasi ke halaman utama
+                navController.navigate("resikelApp")
+            }
             is AuthState.Error -> Toast.makeText(
                 context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
             ).show()
-
             else -> Unit
         }
     }
@@ -91,7 +98,7 @@ fun signIn(
             contentScale = ContentScale.Crop
         )
         TextField(
-            placeholder = { Text("Username") },
+            placeholder = { Text("Email") },
             value = email,
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
@@ -111,7 +118,6 @@ fun signIn(
             placeholder = { Text("Password") },
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    // Ubah ikon berdasarkan status visibilitas password
                     Image(
                         painter = painterResource(
                             id = if (isPasswordVisible) R.drawable.ic_see else R.drawable.ic_dontsee
@@ -166,41 +172,6 @@ fun signIn(
             fontFamily = montserrat,
             fontWeight = FontWeight.Normal
         )
-        Button(
-            border = BorderStroke(1.dp, Color.Black),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .padding(top = 8.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
-            onClick = {}) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(25.dp),
-                    painter = painterResource(id = R.drawable.ic_google), // Replace with your icon resource
-                    contentDescription = "Button Icon",
-                )
-                Text(
-                    text = "Sign Up Google",
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black,
-                    fontFamily = montserrat,
-                    fontSize = 18.sp,
-                )
-                Icon(
-                    tint = Color.Transparent,
-                    modifier = Modifier.size(25.dp),
-                    painter = painterResource(id = R.drawable.ic_google), // Replace with your icon resource
-                    contentDescription = "Button Icon",
-                )
-            }
-        }
         Spacer(Modifier.height(10.dp))
         Row {
             Text(
@@ -219,6 +190,7 @@ fun signIn(
         }
     }
 }
+
 
 @Preview
 @Composable

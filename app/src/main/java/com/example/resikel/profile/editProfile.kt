@@ -1,5 +1,7 @@
 package com.example.resikel.profile
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +58,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.resikel.R
 import com.example.resikel.ui.theme.montserrat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,11 +67,35 @@ fun editProfile(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    val textState = remember { mutableStateOf("Miloenakk") }
-    val emailState = remember { mutableStateOf("miloenakofficial@gmail.com") }
-    val phoneState = remember { mutableStateOf("081627389292") }
-    val dateState = remember { mutableStateOf("29 Juni 2004") }
+    val context = LocalContext.current
+    val firestore = FirebaseFirestore.getInstance()
+    val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser
+    val userId = currentUser?.uid
 
+    // State untuk menampilkan data
+    val username = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val phone = remember { mutableStateOf("") }
+    val date = remember { mutableStateOf("") }
+
+    // Fungsi untuk memuat data pengguna dari Firestore
+    LaunchedEffect(userId) {
+        if (userId != null) {
+            firestore.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        username.value = document.getString("username") ?: ""
+                        email.value = document.getString("email") ?: ""
+                        phone.value = document.getString("phoneNumber") ?: ""
+                        date.value = document.getString("date") ?: ""
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error fetching user data", e)
+                }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -146,8 +176,8 @@ fun editProfile(
                         )
                         // TextField tanpa Outline, hanya garis bawah
                         TextField(
-                            value = textState.value,
-                            onValueChange = { textState.value = it },
+                            value = username.value,
+                            onValueChange = { username.value = it },
                             trailingIcon = {
                                     Image(
                                         painter = painterResource(R.drawable.ic_input), // Ikon pertama
@@ -166,7 +196,7 @@ fun editProfile(
                         )
                     }
 
-//                Email
+                    //                email
                     Column(modifier = Modifier.padding(start = 25.dp, top = 10.dp, bottom = 10.dp, end = 25.dp)) {
                         // Label di atas
                         Text(
@@ -177,8 +207,9 @@ fun editProfile(
                         )
                         // TextField tanpa Outline, hanya garis bawah
                         TextField(
-                            value = emailState.value,
-                            onValueChange = { emailState.value = it },
+                            value = email.value,
+                            onValueChange = {},
+                            readOnly = true,
                             trailingIcon = {
                                 Image(
                                     painter = painterResource(R.drawable.ic_input), // Ikon pertama
@@ -196,6 +227,7 @@ fun editProfile(
                                 .fillMaxWidth()
                         )
                     }
+
 //                Phone number
                     Column(modifier = Modifier.padding(start = 25.dp, top = 10.dp, bottom = 10.dp, end = 25.dp)) {
                         // Label di atas
@@ -207,8 +239,8 @@ fun editProfile(
                         )
                         // TextField tanpa Outline, hanya garis bawah
                         TextField(
-                            value = phoneState.value,
-                            onValueChange = { phoneState.value = it },
+                            value = phone.value,
+                            onValueChange = { phone.value = it },
                             trailingIcon = {
                                 Image(
                                     painter = painterResource(R.drawable.ic_input), // Ikon pertama
@@ -238,8 +270,8 @@ fun editProfile(
                         )
                         // TextField tanpa Outline, hanya garis bawah
                         TextField(
-                            value = dateState.value,
-                            onValueChange = { dateState.value = it },
+                            value = date.value,
+                            onValueChange = { date.value = it },
                             trailingIcon = {
                                 Image(
                                     painter = painterResource(R.drawable.ic_input), // Ikon pertama
@@ -268,7 +300,23 @@ fun editProfile(
                             .fillMaxWidth()
                             .height(60.dp)
                             .padding(start = 35.dp, end = 35.dp),
-                        onClick = {}) {
+                        onClick = {
+                            // Simpan perubahan ke Firestore
+                            if (userId != null) {
+                                val userData = mapOf(
+                                    "username" to username.value,
+                                    "phoneNumber" to phone.value,
+                                    "date" to date.value
+                                )
+                                firestore.collection("users").document(userId).set(userData)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e("Firestore", "Error updating profile", e)
+                                    }
+                            }
+                        }) {
                         Text(
                             text = "Simpan Perubahan",
                             fontWeight = FontWeight.Bold,

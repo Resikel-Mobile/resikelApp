@@ -81,6 +81,7 @@ import com.example.resikel.pickup.successDelivery
 import com.example.resikel.pickup.trackingOrder
 import com.example.resikel.pickup.trashItemList
 import com.example.resikel.profile.editProfile
+
 import com.example.resikel.profile.profileScreen
 import com.example.resikel.report.ReportScreen
 import com.example.resikel.report.SuccessReport
@@ -193,7 +194,7 @@ fun resikelApp(
                             authViewModel = AuthViewModel()
                         )
                     }
-                    composable("homeScreen") { homeScreen(navController = navController) }
+                    composable("homeScreen") { homeScreen(navController = navController, authViewModel = AuthViewModel()) }
                     composable("onProggress") { onproggress() }
                     composable("notifScreen") { notifScreen(navController = navController) }
                     composable("historyScreen") { historyScreen() }
@@ -240,7 +241,7 @@ fun resikelApp(
                     composable("CommunityDetail") { CommunityDetail(navController = navController) }
                     composable("CommunityMember") { CommunityMember(navController = navController) }
                     composable("PersonalChat") { PersonalChat(navController = navController) }
-                    composable("locationScreen") { MapScreen(mapViewModel = MapViewModel()) }
+                    composable("locationScreen") { MapScreen() }
                     composable("detailInformasi") { detailInformasi(navController = navController) }
                     composable("forGotPassword") { forGotPassword(navController = navController) }
                     composable("chatScreen") { chatScreen(navController = navController, chatViewModel = ChatViewModel()) }

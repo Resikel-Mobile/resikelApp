@@ -76,13 +76,20 @@ fun profileScreen(
     modifier: Modifier = Modifier,
     navController: NavController,authViewModel: AuthViewModel
 ) {
+    val username by authViewModel.username.observeAsState("")
+
     val coroutineScope = rememberCoroutineScope()
     var isSheetOpen by remember { mutableStateOf(false) }
 
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.observeAsState(AuthState.Unauthenticated)
+    val userEmail = when (authState) {
+        is AuthState.Authenticated -> (authState as AuthState.Authenticated).user?.email
+            ?: "Unknown User"
+        else -> "Unknown User"
+    }
 
-    LaunchedEffect(authState.value) {
-        when(authState.value){
+    LaunchedEffect(authState) {
+        when (authState) {
             is AuthState.Unauthenticated -> navController.navigate("sign_in")
             else -> Unit
         }
@@ -425,7 +432,7 @@ fun profileScreen(
             ) {
                 Spacer(Modifier.height(115.dp))
                 Image(
-                    painter = painterResource(R.drawable.pp),
+                    painter = painterResource(R.drawable.user_default),
                     contentDescription = "",
                     modifier = Modifier
                         .size(115.dp)
@@ -435,14 +442,14 @@ fun profileScreen(
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
-                    text = "Naya Rafeza",
+                    text = "$username",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = montserrat
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    text = "NayaRafeza123@gmail.com",
+                    text = "$userEmail",
                     color = Color(84, 84, 84),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,

@@ -1,5 +1,6 @@
 package com.example.resikel.location
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +46,7 @@ import com.example.resikel.ui.theme.primaryGreen
 import com.example.resikel.ui.theme.primaryWhite
 import com.example.resikel.viewmodel.MapViewModel
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -51,85 +54,113 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import java.util.Locale
 
-//TODO: GET DATA FROM API & IMPLEMENT CURRENT LOCATION N SET POLYLINE TO DESINATION ROUTE
 @Composable
-fun MapScreen(mapViewModel: MapViewModel) {
-    val location = LatLng(40.9971, 29.1007)
-    val location2 = LatLng(40.9867, 29.0570)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(location, 15f)
-    }
-    //get current location
+fun MapScreen() {
     val context = LocalContext.current
-    val userLocation by mapViewModel.userLocation
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-    //handle permission
+
+    // Sample data for TPS locations
+    val tpsLocations = listOf(
+        LatLng(1.1549956364659981, 104.12230730292788) to "PMPS",
+        LatLng(1.0529915647756551, 104.1241195158386) to "TPA Punggur"
+    )
+
+    // State untuk lokasi pengguna dan alamat
+    val userLocation = remember { mutableStateOf<LatLng?>(null) }
+    val address = remember { mutableStateOf("Fetching address...") }
+
+    // Camera position state
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(userLocation.value ?: LatLng(40.9971, 29.1007), 15f)
+    }
+
+    // Handle location permission
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            mapViewModel.fetchUserLocation(context, fusedLocationClient)
+            // Fetch the location once permission is granted
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    // Set lokasi saat ini
+                    userLocation.value = LatLng(it.latitude, it.longitude)
+
+                    // Ambil alamat berdasarkan lokasi
+                    val geocoder = Geocoder(context, Locale.getDefault())
+                    val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
+                    address.value = addresses?.firstOrNull()?.getAddressLine(0) ?: "Alamat tidak ditemukan"
+
+                    // Update camera position ke lokasi pengguna
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(userLocation.value ?: LatLng(40.9971, 29.1007), 15f)
+
+                    // Debugging log untuk memastikan lokasi ditemukan
+                    Log.d("MapScreen", "User location: ${it.latitude}, ${it.longitude}")
+                } ?: Log.e("MapScreen", "Location is null")
+            }
         } else {
-            Log.e("Map Screen", "Permission denied")
+            Log.e("MapScreen", "Permission denied")
         }
     }
-    //Request location permission when composable is launched
+
+    // Launch effect to handle location fetching logic
     LaunchedEffect(Unit) {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                mapViewModel.fetchUserLocation(context, fusedLocationClient)
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    userLocation.value = LatLng(it.latitude, it.longitude)
+                    // Ambil alamat berdasarkan lokasi
+                    val geocoder = Geocoder(context, Locale.getDefault())
+                    val addresses = geocoder.getFromLocation(it.latitude, it.longitude, 1)
+                    address.value = addresses?.firstOrNull()?.getAddressLine(0) ?: "Alamat tidak ditemukan"
+
+                    // Update camera position ke lokasi pengguna
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(userLocation.value ?: LatLng(40.9971, 29.1007), 15f)
+
+                    // Debugging log untuk memastikan lokasi ditemukan
+                    Log.d("MapScreen", "User location: ${it.latitude}, ${it.longitude}")
+                }
             }
-            else -> {
-                permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-            }
+        } else {
+            permissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
-    Column() {
-        //Google Map Section
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Google Map Section
         GoogleMap(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(3f),
             cameraPositionState = cameraPositionState
         ) {
-            //TODO: Tambahkan beberapa marker disini
-            /*Marker(
-                state = MarkerState(position = location),
-                title = "Contoh Lokasi TPS 1"
-            )
-            Marker(
-                state = MarkerState(position = location2),
-                title = "Contoh Lokasi TPS 2"
-            )*/
-            //TODO: Nanti untuk custom Marker / Pembeda Tiap TPS
-            /*MarkerComposable(state = MarkerState(position = location)) {
-                Image(
-                    painter = painterResource(),
-                    contentDescription = null,
-                )
-            }*/
-            //TODO: TESTING GET LOCATION
-            userLocation?.let {
+            // Marker for user location (added dynamically)
+            userLocation.value?.let { location ->
                 Marker(
-                    state = MarkerState(position = it),
+                    state = MarkerState(position = location),
                     title = "Your Location",
-                    snippet = "Current Location Snippet"
+                    snippet = address.value, // Display the address here
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
                 )
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)
+            }
+
+            // Markers for TPS locations
+            tpsLocations.forEach { (location, title) ->
+                Marker(
+                    state = MarkerState(position = location),
+                    title = title,
+                    icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                )
             }
         }
-        //Route Section
+
+        // Route Section
         Column(modifier = Modifier.weight(1f)) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(
-                        RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                    )
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .background(color = primaryGreen)
                     .padding(14.dp)
             ) {
@@ -142,39 +173,43 @@ fun MapScreen(mapViewModel: MapViewModel) {
             }
             Column(
                 modifier = Modifier
-                    .clip(
-                        RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                    )
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .background(color = primaryWhite)
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = "Your route", fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-                //TODO: CLICK DI SINI UNTUK MENDAPATKAN CURRENT LOCATION or Click di Icon Map
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = null
-                    )
-                    Text(text = "Jl. Budi Mulia Gang Kelinci RT 001 RW 002 Batam")
-                }
+                Text(text = "Your route", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+
+                // User location display
+                userLocation.value?.let {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = null
+                        )
+                        Text(text = "Your Location: ${address.value}") // Show the address here
+                    }
+                } ?: Text("Fetching your location...") // Will display until the location is fetched
+
                 HorizontalDivider()
-                //TODO: CLICK DI MARKER MAP UNTUK MENDAPATKAN LOKASI DESTINATION
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = null
-                    )
-                    Text(text = "Destination Route")
+
+                // Display TPS locations
+                tpsLocations.forEach { (_, title) ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = null
+                        )
+                        Text(text = title)
+                    }
+                    HorizontalDivider()
                 }
-                HorizontalDivider()
             }
         }
     }
 }
+
+
 /*
 @Preview(showBackground = true)
 @Composable
