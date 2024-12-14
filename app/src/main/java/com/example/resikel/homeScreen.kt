@@ -191,7 +191,7 @@ fun homeScreen(
                                     fontWeight = FontWeight.Bold,
                                 )
                                 Text(
-                                    "20.000 Poin",
+                                    "10 Poin",
                                     fontFamily = montserrat,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold

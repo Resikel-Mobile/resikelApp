@@ -46,7 +46,8 @@ import com.example.resikel.ui.theme.montserrat
 @Composable
 fun analisisScreen(modifier: Modifier = Modifier) {
     val interactionSource = remember { MutableInteractionSource() }
-    Scaffold(topBar = {
+    Scaffold(containerColor = Color.White,
+        topBar = {
         Box(
             modifier = Modifier
                 .background(colorResource(id = R.color.main_green))
@@ -219,7 +220,7 @@ fun contentAnalisi(modifier: Modifier = Modifier) {
             }
         }
 //list barang nya
-        LazyColumn {
+        LazyColumn(modifier = Modifier.background(Color.White)) {
             items(10) { listBarangAnalisis() }
         }
 
@@ -230,9 +231,10 @@ fun contentAnalisi(modifier: Modifier = Modifier) {
 @Composable
 fun listBarangAnalisis(modifier: Modifier = Modifier) {
     Surface(
+        color = Color.White,
         shape = RoundedCornerShape(10.dp),
         shadowElevation = 4.dp, modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth().background(Color.White)
             .padding(vertical = 10.dp)
     ) {
         Row(

@@ -25,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +55,7 @@ fun chatScreen(navController: NavController, chatViewModel: ChatViewModel) {
     }
 
     // Gunakan Box untuk menumpuk elemen
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         // Tambahkan gambar sebagai latar belakang
         Image(
             painter = painterResource(id = R.drawable.logo1), // Ganti dengan ID resource gambar Anda
@@ -68,7 +70,7 @@ fun chatScreen(navController: NavController, chatViewModel: ChatViewModel) {
         // Kolom utama di atas gambar
         Column(modifier = Modifier.fillMaxSize()) {
             // Header
-            TopAppBar(
+            TopAppBar( colors =  TopAppBarDefaults.topAppBarColors(Color.White),
                 title = {
                     Text(
                         "AskResikel",

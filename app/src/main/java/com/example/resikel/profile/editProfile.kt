@@ -150,6 +150,7 @@ fun editProfile(
             }
 
             Surface(
+                color = Color.White,
                 shadowElevation = 12.dp,
                 shape = RoundedCornerShape(15.dp),
                 modifier = Modifier
@@ -208,7 +209,7 @@ fun editProfile(
                         // TextField tanpa Outline, hanya garis bawah
                         TextField(
                             value = email.value,
-                            onValueChange = {},
+                            onValueChange = {email.value = it},
                             readOnly = true,
                             trailingIcon = {
                                 Image(
@@ -305,6 +306,7 @@ fun editProfile(
                             if (userId != null) {
                                 val userData = mapOf(
                                     "username" to username.value,
+                                    "email" to email.value,
                                     "phoneNumber" to phone.value,
                                     "date" to date.value
                                 )
@@ -336,7 +338,7 @@ fun editProfile(
             ) {
                 Spacer(Modifier.height(115.dp))
                 Image(
-                    painter = painterResource(R.drawable.pp),
+                    painter = painterResource(R.drawable.user_default),
                     contentDescription = "",
                     modifier = Modifier
                         .size(115.dp)

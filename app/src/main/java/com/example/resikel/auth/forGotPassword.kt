@@ -71,6 +71,7 @@ fun forGotPassword(modifier: Modifier = Modifier,navController: NavController) {
         }
     }
     Scaffold(
+        containerColor = Color.White,
         topBar = { appbarReset(navController = navController) },
         bottomBar = { buttonResetPass() },
         contentWindowInsets = WindowInsets.systemBars,

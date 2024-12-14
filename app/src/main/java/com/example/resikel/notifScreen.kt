@@ -101,7 +101,7 @@ fun notifScreen(modifier: Modifier = Modifier, navController: NavController) {
             }
         }
 
-        LazyColumn {
+        LazyColumn(modifier.background(Color.White)) {
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,

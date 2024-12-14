@@ -47,7 +47,7 @@ import com.example.resikel.ui.theme.montserrat
 @Composable
 fun detailInformasi(modifier: Modifier = Modifier, navController: NavController) {
     val interactionSource = remember { MutableInteractionSource() }
-    Scaffold(
+    Scaffold(containerColor = Color.White,
         topBar = {
             Box(
                 modifier = Modifier
@@ -125,7 +125,7 @@ fun contentDetailInformasi(modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(10.dp),
         shadowElevation = 4.dp,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().background(Color.White)
             .height(700.dp)
             .offset(y = 94.dp)
             .padding(18.dp),

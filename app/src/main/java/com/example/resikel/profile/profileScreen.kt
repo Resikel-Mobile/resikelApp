@@ -165,6 +165,7 @@ fun profileScreen(
             }
 
             Surface(
+                color = Color.White,
                 shadowElevation = 12.dp,
                 shape = RoundedCornerShape(15.dp),
                 modifier = Modifier

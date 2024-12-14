@@ -116,21 +116,21 @@ fun SummaryReport(
                         .size(56.dp)
                         .padding(horizontal = 8.dp, vertical = 8.dp)
                         .background(
-                            color = Color.Transparent,
+                            color = Color.White,
                             shape = RoundedCornerShape(36.dp)
                         )
                         .clickable(
                             interactionSource = interactionSource,
                             indication = null
                         ) {
-
+                            showDialog = true // Show dialog when clicked
                         }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.arrowleft),
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = Color.Transparent
+                        tint = colorResource(R.color.main_green)
                     )
                 }
             },
