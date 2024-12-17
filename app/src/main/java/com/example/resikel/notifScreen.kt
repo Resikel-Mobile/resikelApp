@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -137,14 +138,20 @@ fun listNotif() {
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, top = 15.dp, bottom = 8.dp)
     ) {
-        Image(
-            painter = painterResource(R.drawable.pp),
-            contentDescription = "nahidul",
-            modifier = Modifier
-                .size(60.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+        Surface(
+            modifier = Modifier.size(60.dp),
+            shape = CircleShape,
+            color = Color(243, 243, 243),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.megaphone),
+                contentDescription = "nahidul",
+                modifier = Modifier
+                    .clip(CircleShape).padding(10.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
+
         Spacer(Modifier.width(12.dp))
         Column() {
             Row(
@@ -152,7 +159,7 @@ fun listNotif() {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Naya Rafeza",
+                    text = "Latest News",
                     fontSize = 17.sp,
                     fontFamily = montserrat,
                     fontWeight = FontWeight.Bold,

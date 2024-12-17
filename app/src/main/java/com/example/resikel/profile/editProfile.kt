@@ -1,11 +1,13 @@
 package com.example.resikel.profile
 
+import android.app.DatePickerDialog
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -51,6 +54,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,6 +64,7 @@ import com.example.resikel.R
 import com.example.resikel.ui.theme.montserrat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +83,33 @@ fun editProfile(
     val email = remember { mutableStateOf("") }
     val phone = remember { mutableStateOf("") }
     val date = remember { mutableStateOf("") }
+
+    val calendar = Calendar.getInstance()
+
+    // State untuk menampilkan DatePickerDialog
+    val showDatePicker = remember { mutableStateOf(false) }
+
+    // DatePickerDialog
+    if (showDatePicker.value) {
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                // Perbarui tanggal dalam format dd/MM/yyyy
+                val selectedDate =
+                    "${String.format("%02d", dayOfMonth)}/${String.format("%02d", month + 1)}/$year"
+                date.value = selectedDate
+                showDatePicker.value = false // Set ulang menjadi false
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.setOnDismissListener {
+            showDatePicker.value = false
+        }
+        datePickerDialog.show()
+    }
+
 
     // Fungsi untuk memuat data pengguna dari Firestore
     LaunchedEffect(userId) {
@@ -166,7 +198,13 @@ fun editProfile(
                     horizontalAlignment = Alignment.Start
                 ) {
 //                Edit profile
-                    Column(modifier = Modifier.padding(start = 25.dp, top = 10.dp, bottom = 10.dp, end = 25.dp)
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 25.dp,
+                            top = 10.dp,
+                            bottom = 10.dp,
+                            end = 25.dp
+                        )
                     ) {
                         // Label di atas
                         Text(
@@ -180,11 +218,11 @@ fun editProfile(
                             value = username.value,
                             onValueChange = { username.value = it },
                             trailingIcon = {
-                                    Image(
-                                        painter = painterResource(R.drawable.ic_input), // Ikon pertama
-                                        contentDescription = "Copy",
-                                        modifier = Modifier.size(20.dp)
-                                    )
+                                Image(
+                                    painter = painterResource(R.drawable.ic_input), // Ikon pertama
+                                    contentDescription = "Copy",
+                                    modifier = Modifier.size(20.dp)
+                                )
                             },
                             colors = TextFieldDefaults.textFieldColors(
                                 containerColor = Color.Transparent, // Latar belakang transparan
@@ -198,7 +236,14 @@ fun editProfile(
                     }
 
                     //                email
-                    Column(modifier = Modifier.padding(start = 25.dp, top = 10.dp, bottom = 10.dp, end = 25.dp)) {
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 25.dp,
+                            top = 10.dp,
+                            bottom = 10.dp,
+                            end = 25.dp
+                        )
+                    ) {
                         // Label di atas
                         Text(
                             text = "Email",
@@ -209,7 +254,7 @@ fun editProfile(
                         // TextField tanpa Outline, hanya garis bawah
                         TextField(
                             value = email.value,
-                            onValueChange = {email.value = it},
+                            onValueChange = { email.value = it },
                             readOnly = true,
                             trailingIcon = {
                                 Image(
@@ -230,7 +275,14 @@ fun editProfile(
                     }
 
 //                Phone number
-                    Column(modifier = Modifier.padding(start = 25.dp, top = 10.dp, bottom = 10.dp, end = 25.dp)) {
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 25.dp,
+                            top = 10.dp,
+                            bottom = 10.dp,
+                            end = 25.dp
+                        )
+                    ) {
                         // Label di atas
                         Text(
                             text = "Phone Number",
@@ -250,17 +302,25 @@ fun editProfile(
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent, // Latar belakang transparan
-                                focusedIndicatorColor = Color.Black, // Garis bawah aktif
-                                unfocusedIndicatorColor = Color.Gray, // Garis bawah tidak aktif
-
+                                containerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Black,
+                                unfocusedIndicatorColor = Color.Gray,
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number // Menampilkan keyboard angka
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
                         )
                     }
 //                    Birth Date
-                    Column(modifier = Modifier.padding(start = 25.dp, top = 10.dp, bottom = 10.dp, end = 25.dp)
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 25.dp,
+                            top = 10.dp,
+                            bottom = 10.dp,
+                            end = 25.dp
+                        )
                     ) {
                         // Label di atas
                         Text(
@@ -269,25 +329,30 @@ fun editProfile(
                             fontFamily = montserrat,
                             fontWeight = FontWeight.Bold
                         )
-                        // TextField tanpa Outline, hanya garis bawah
                         TextField(
                             value = date.value,
-                            onValueChange = { date.value = it },
+                            onValueChange = { },
+                            readOnly = true,
                             trailingIcon = {
-                                Image(
-                                    painter = painterResource(R.drawable.ic_input), // Ikon pertama
-                                    contentDescription = "Copy",
-                                    modifier = Modifier.size(20.dp)
-                                )
+                                IconButton(onClick = { showDatePicker.value = true }) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.calendar),
+                                        contentDescription = "Pick Date",
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
                             },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent, // Latar belakang transparan
-                                focusedIndicatorColor = Color.Black, // Garis bawah aktif
-                                unfocusedIndicatorColor = Color.Gray, // Garis bawah tidak aktif
+                                containerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Black,
+                                unfocusedIndicatorColor = Color.Gray,
 
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .clickable {
+                                    showDatePicker.value = true
+                                } // Buka DatePicker saat diklik
                         )
                     }
                     Spacer(Modifier.height(35.dp))
@@ -295,7 +360,7 @@ fun editProfile(
                     Button(
                         shape = RoundedCornerShape(14.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(89,163,89)
+                            containerColor = Color(89, 163, 89)
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -312,7 +377,11 @@ fun editProfile(
                                 )
                                 firestore.collection("users").document(userId).set(userData)
                                     .addOnSuccessListener {
-                                        Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Profile updated successfully",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                     .addOnFailureListener { e ->
                                         Log.e("Firestore", "Error updating profile", e)
